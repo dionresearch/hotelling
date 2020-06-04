@@ -17,3 +17,10 @@ Module implementing Hotelling one and two sample tests
    .. automodule:: hotelling.stats
       :members:
       :show-inheritance:
+
+   :mod:`hotelling.plots`
+   ----------------------
+
+   .. automodule:: hotelling.plots
+      :members:
+      :show-inheritance:
