@@ -1,41 +1,44 @@
-=========
 Hotelling
 =========
 
+|image|
 
-.. image:: https://img.shields.io/pypi/v/hotelling.svg
-        :target: https://pypi.python.org/pypi/hotelling
-
-.. image:: https://img.shields.io/travis/fdion/hotelling.svg
-        :target: https://travis-ci.org/fdion/hotelling
-
-.. image:: https://readthedocs.org/projects/hotelling/badge/?version=latest
-        :target: https://hotelling.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-
-.. image:: https://pyup.io/repos/github/fdion/hotelling/shield.svg
-     :target: https://pyup.io/repos/github/fdion/hotelling/
-     :alt: Updates
-
-
+|Documentation Status|
 
 Hotelling implements one and two sample Hotelling T^2 (T-squared) tests.
+It also implements Hotelling Control Charts (Multivariate) and multiple
+Univariate Control Charts
 
+.. figure:: https://github.com/dionresearch/hotelling/raw/master/png/hotelling_control_chart.png
+   :alt: Hotelling Control Chart
 
-* Free software: MIT license
-* Documentation: https://hotelling.readthedocs.io.
+   Hotelling Control Chart
 
+.. figure:: https://github.com/dionresearch/hotelling/raw/master/png/univariate_chart.png
+   :alt: Univariate Control Chart
+
+   Univariate Control Chart
+
+-  Free software: MIT license
+-  Documentation: https://hotelling.readthedocs.io.
 
 Features
 --------
 
-* TODO
+-  Stats module covering hotelling t^2 (t-squared) statistics, f-value
+   and p-value
+-  plots module covering Univariate Control Chart and Hotelling Control
+   Chart
 
 Credits
 -------
 
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+This package was created with
+`Cookiecutter <https://github.com/audreyr/cookiecutter>`__ and the
+`audreyr/cookiecutter-pypackage <https://github.com/audreyr/cookiecutter-pypackage>`__
+project template.
 
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+.. |image| image:: https://img.shields.io/pypi/v/hotelling.svg
+   :target: https://pypi.python.org/pypi/hotelling
+.. |Documentation Status| image:: https://readthedocs.org/projects/hotelling/badge/?version=latest
+   :target: https://hotelling.readthedocs.io/en/latest/?badge=latest

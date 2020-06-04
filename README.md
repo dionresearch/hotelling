@@ -3,14 +3,16 @@ Hotelling
 
 [![image](https://img.shields.io/pypi/v/hotelling.svg)](https://pypi.python.org/pypi/hotelling)
 
-[![image](https://img.shields.io/travis/fdion/hotelling.svg)](https://travis-ci.org/fdion/hotelling)
-
 [![Documentation Status](https://readthedocs.org/projects/hotelling/badge/?version=latest)](https://hotelling.readthedocs.io/en/latest/?badge=latest)
 
-[![Updates](https://pyup.io/repos/github/fdion/hotelling/shield.svg)](https://pyup.io/repos/github/fdion/hotelling/)
 
 Hotelling implements one and two sample Hotelling T\^2 (T-squared)
-tests.
+tests. It also implements Hotelling Control Charts (Multivariate) and multiple Univariate Control Charts
+
+  ![image](https://github.com/dionresearch/hotelling/raw/master/png/hotelling_control_chart.png)
+
+  ![image](https://github.com/dionresearch/hotelling/raw/master/png/univariate_chart.png)
+
 
 -   Free software: MIT license
 -   Documentation: <https://hotelling.readthedocs.io>.
@@ -18,7 +20,9 @@ tests.
 Features
 --------
 
--   TODO
+-   Stats module covering hotelling t^2 (t-squared) statistics, f-value and p-value
+-   plots module covering Univariate Control Chart and Hotelling Control Chart
+
 
 Credits
 -------
