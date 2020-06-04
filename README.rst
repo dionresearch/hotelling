@@ -1,9 +1,13 @@
 Hotelling
 =========
 
-|image|
+.. image:: https://img.shields.io/pypi/v/hotelling.svg
+        :target: https://pypi.python.org/pypi/hotelling
 
-|Documentation Status|
+
+.. image:: https://readthedocs.org/projects/hotelling/badge/?version=latest
+        :target: https://hotelling.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
 
 Hotelling implements one and two sample Hotelling T^2 (T-squared) tests.
 It also implements Hotelling Control Charts (Multivariate) and multiple
