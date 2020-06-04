@@ -95,7 +95,7 @@ def pooled_covariance_matrix(x, y, bessel=True):
     return s
 
 
-def hotelling_t2(x, y=None, bessel=True):
+def hotelling_t2(x, y=None, bessel=True, S=None):
     """
     Compute the Hotelling (T2) test statistic.
 
@@ -203,12 +203,17 @@ def hotelling_t2(x, y=None, bessel=True):
     # Technically, we use diff_bar.T for the transpose, but with Pandas, a 1 dimensional dataframe
     # is automatically aligned for @ and is not required
     if one_sample:
-        try:
-            cov = x.cov()
-        except AttributeError:
-            cov = np.cov(x, rowvar=False)
+        if S is not None:
+            cov = S
+        else:
+            try:
+                cov = x.cov()
+            except AttributeError:
+                cov = np.cov(x, rowvar=False)
         inv_cov = np.linalg.pinv(cov)
         t2_stat = n * (diff_bar.T @ inv_cov @ diff_bar)
+        if S is not None:
+            return t2_stat
         # f statistic
         # TODO: use chi square instead of f statistic for large sample
         f_value = (n - p) * t2_stat / ((n - 1) * p)
