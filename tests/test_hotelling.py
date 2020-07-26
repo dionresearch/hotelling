@@ -102,7 +102,6 @@ def test_mu0():
 
     # 1985 USDA data
     df = pd.read_csv('data/nutrient.txt', delimiter=' ', skipinitialspace=True, index_col=0)
-    #df_desc_t = df.describe().T
 
     res = hotelling_t2(df, mu0)
     assert round(res[0], 4) == 1758.5413  # T2
