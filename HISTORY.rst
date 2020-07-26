@@ -2,6 +2,19 @@
 History
 =======
 
+0.4.0 (2020-07-26)
+------------------
+
+* matplotlib as requirement
+* now with optional plotly support
+* keyword interactive for uni and multivariate control charts
+* bugfix, handling no outliers
+
+0.3.0 (2020-06-04)
+------------------
+
+* added multi and univariate control charts
+
 0.2.0 (2020-06-02)
 ------------------
 

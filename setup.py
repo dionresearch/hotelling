@@ -8,7 +8,7 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["docopt", "scipy", "pandas", "numpy"]
+requirements = ["docopt", "scipy", "matplotlib", "pandas", "numpy"]
 
 setup_requirements = ["pytest-runner"]
 
@@ -24,12 +24,11 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
     ],
-    description="Hotelling implements one and two sample Hotelling T2 tests",
+    description="Hotelling implements one and two sample Hotelling T2 tests and control charts",
     entry_points={"console_scripts": ["hotelling=hotelling.cli:main"]},
     install_requires=requirements,
     license="MIT license",
