@@ -13,7 +13,6 @@ pytest-runner==5.1
 pydocstyle
 proselint
 nbsphinx
-pysixel
 pytest-cov
 pytest-md
 pytest-emoji
