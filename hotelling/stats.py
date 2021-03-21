@@ -98,7 +98,7 @@ def pooled_covariance_matrix(x, y, bessel=True):
 
 def hotelling_t2(x, y=None, bessel=True, S=None):
     r"""hotelling_t2.
-    
+
     Compute the Hotelling (T2) test statistic.
 
     It is the multivariate extension of the Student's t-test.

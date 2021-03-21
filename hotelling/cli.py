@@ -11,7 +11,8 @@ from hotelling.stats import hotelling_dict
 from hotelling.plots import control_chart
 from hotelling.helpers import savefig
 
-matplotlib.rcParams["backend"]="Agg"
+matplotlib.rcParams["backend"] = "Agg"
+
 
 @click.command()
 @click.option("--x", prompt="X filename", help="Dataset X filename.")

@@ -343,7 +343,7 @@ def univariate_control_chart(
                 )
             pfig.update_xaxes(range=(x_min - 1, x_max + 1))
             pfig.update_yaxes(range=(y_low, y_high))
-            pfig.update_layout(margin=dict(l=1, r=1), annotations=[ucl_text, mean_text, lcl_text])
+            pfig.update_layout(margin=dict(l=1, r=1), annotations=[ucl_text, mean_text, lcl_text])  # noqa
             iplot(pfig)
     if not interactive:
         return fig
