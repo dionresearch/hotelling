@@ -1,0 +1,809 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Multivariate sample &#8212; Hotelling T2 0.4.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="hotelling" href="modules.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">hotelling.plots</span> <span class="kn">import</span> <span class="n">control_chart</span><span class="p">,</span> <span class="n">control_stats</span><span class="p">,</span> <span class="n">univariate_control_chart</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Multivariate-sample">
+<h1>Multivariate sample<a class="headerlink" href="#Multivariate-sample" title="Permalink to this headline">¶</a></h1>
+<p>data from Nola D. Tracy, John C. Young &amp; Robert L. Mason (1992) Multivariate Control Charts for individual Observations, Journal or Quality Technology, 24:2, 88-95, DOI:10.1080/00224065.1992.12015232</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">y</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">],</span>
+        <span class="s2">&quot;impurities&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">14.92</span><span class="p">,</span>
+            <span class="mf">16.90</span><span class="p">,</span>
+            <span class="mf">17.38</span><span class="p">,</span>
+            <span class="mf">16.90</span><span class="p">,</span>
+            <span class="mf">16.92</span><span class="p">,</span>
+            <span class="mf">16.71</span><span class="p">,</span>
+            <span class="mf">17.07</span><span class="p">,</span>
+            <span class="mf">16.93</span><span class="p">,</span>
+            <span class="mf">16.71</span><span class="p">,</span>
+            <span class="mf">16.88</span><span class="p">,</span>
+            <span class="mf">16.73</span><span class="p">,</span>
+            <span class="mf">17.07</span><span class="p">,</span>
+            <span class="mf">17.60</span><span class="p">,</span>
+            <span class="mf">16.90</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;temp&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">85.77</span><span class="p">,</span>
+            <span class="mf">83.77</span><span class="p">,</span>
+            <span class="mf">84.46</span><span class="p">,</span>
+            <span class="mf">86.27</span><span class="p">,</span>
+            <span class="mf">85.23</span><span class="p">,</span>
+            <span class="mf">83.81</span><span class="p">,</span>
+            <span class="mf">86.08</span><span class="p">,</span>
+            <span class="mf">85.85</span><span class="p">,</span>
+            <span class="mf">85.73</span><span class="p">,</span>
+            <span class="mf">86.27</span><span class="p">,</span>
+            <span class="mf">83.46</span><span class="p">,</span>
+            <span class="mf">85.81</span><span class="p">,</span>
+            <span class="mf">85.92</span><span class="p">,</span>
+            <span class="mf">84.23</span><span class="p">,</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;concentration&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="mf">42.26</span><span class="p">,</span>
+            <span class="mf">43.44</span><span class="p">,</span>
+            <span class="mf">42.74</span><span class="p">,</span>
+            <span class="mf">43.60</span><span class="p">,</span>
+            <span class="mf">43.18</span><span class="p">,</span>
+            <span class="mf">43.72</span><span class="p">,</span>
+            <span class="mf">43.33</span><span class="p">,</span>
+            <span class="mf">43.41</span><span class="p">,</span>
+            <span class="mf">43.28</span><span class="p">,</span>
+            <span class="mf">42.59</span><span class="p">,</span>
+            <span class="mf">44.00</span><span class="p">,</span>
+            <span class="mf">42.78</span><span class="p">,</span>
+            <span class="mf">43.11</span><span class="p">,</span>
+            <span class="mf">43.48</span><span class="p">,</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+
+<span class="n">y</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">help</span><span class="p">(</span><span class="n">control_chart</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function control_chart in module hotelling.plots:
+
+control_chart(x, phase=1, alpha=0.001, x_bar=None, s=None, legend_right=False, interactive=False, width=10)
+    control_chart
+
+    Hotellilng Control Chart based on Q / T^2
+
+    :param x: pandas dataframe, uni or multivariate
+    :param phase: 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control
+    :param alpha: significance level - used to calculate control lines at α/2 and 1-α/2
+    :param x_bar: sample mean
+    :param s: sample covariance
+    :param legend_right: default to &#39;left&#39;, can specify &#39;right&#39;
+    :param interactive: if plotly is available, renders as interactive plot in notebook. False to render image.
+    :param width: how many units wide. defaults to 10, good for notebooks
+    :return: matplotlib ax
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">control_chart</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">legend_right</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotelling_control_chart_example_4_0.png" src="_images/hotelling_control_chart_example_4_0.png" />
+</div>
+</div>
+<p>At alpha = 0.01, it appears sample 1 and sample 4 are out of control. We investigate the individual variables, to see if we can learn more about this.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">help</span><span class="p">(</span><span class="n">univariate_control_chart</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Help on function univariate_control_chart in module hotelling.plots:
+
+univariate_control_chart(x, var=None, sigma=3, legend_right=False, interactive=False, connected=True, width=10)
+    univariate_control_chart
+
+
+    :param x: pandas dataframe, uni or multivariate
+    :param var: optional, variable to plot (default to all)
+    :param sigma: default to 3 sigma from mean for upper and lower control lines
+    :param legend_right: default to &#39;left&#39;, can specify &#39;right&#39;
+    :param interactive: if plotly is available, renders as interactive plot in notebook. False to render image.
+    :param connected: defaults to True. Appropriate when time related, else, should be False
+    :param width: how many units wide. defaults to 10, good for notebooks
+    :return: returns matplotlib figure
+
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">y</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>impurities</th>
+      <th>temp</th>
+      <th>concentration</th>
+    </tr>
+    <tr>
+      <th>id</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>14.92</td>
+      <td>85.77</td>
+      <td>42.26</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>16.90</td>
+      <td>83.77</td>
+      <td>43.44</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>17.38</td>
+      <td>84.46</td>
+      <td>42.74</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>16.90</td>
+      <td>86.27</td>
+      <td>43.60</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>16.92</td>
+      <td>85.23</td>
+      <td>43.18</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>16.71</td>
+      <td>83.81</td>
+      <td>43.72</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>17.07</td>
+      <td>86.08</td>
+      <td>43.33</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>16.93</td>
+      <td>85.85</td>
+      <td>43.41</td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>16.71</td>
+      <td>85.73</td>
+      <td>43.28</td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>16.88</td>
+      <td>86.27</td>
+      <td>42.59</td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>16.73</td>
+      <td>83.46</td>
+      <td>44.00</td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>17.07</td>
+      <td>85.81</td>
+      <td>42.78</td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>17.60</td>
+      <td>85.92</td>
+      <td>43.11</td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>16.90</td>
+      <td>84.23</td>
+      <td>43.48</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">univariate_control_chart</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">legend_right</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotelling_control_chart_example_8_0.png" src="_images/hotelling_control_chart_example_8_0.png" />
+</div>
+</div>
+<p>From the above chart, it looks like impurities might be out of control for sample id 1. Since we see this out of control at both the Hotelling control chart and univariate control chart, we will remove the first observation.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">y_sub</span> <span class="o">=</span> <span class="n">y</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+<span class="n">control_chart</span><span class="p">(</span><span class="n">y_sub</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">legend_right</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">12</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotelling_control_chart_example_10_0.png" src="_images/hotelling_control_chart_example_10_0.png" />
+</div>
+</div>
+<p>This looks better, and now, sample 4 that was out of control is now in control (sample 3). We could save the mean vector and the covariance matrix for a phase 2 evaluation of new samples.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x_bar</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">control_stats</span><span class="p">(</span><span class="n">y_sub</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">x_bar</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+impurities       16.976923
+temp             85.145385
+concentration    43.281538
+dtype: float64
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">s</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area rendered_html docutils container">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>impurities</th>
+      <th>temp</th>
+      <th>concentration</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>impurities</td>
+      <td>0.067006</td>
+      <td>0.076218</td>
+      <td>-0.053878</td>
+    </tr>
+    <tr>
+      <td>temp</td>
+      <td>0.076218</td>
+      <td>1.092777</td>
+      <td>-0.215359</td>
+    </tr>
+    <tr>
+      <td>concentration</td>
+      <td>-0.053878</td>
+      <td>-0.215359</td>
+      <td>0.162997</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<p>Assuming we had a new sample set (here we will reuse y), we call control_chart with phase = 2:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">control_chart</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.01</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">x_bar</span><span class="o">=</span><span class="n">x_bar</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">,</span> <span class="n">legend_right</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/hotelling_control_chart_example_16_0.png" src="_images/hotelling_control_chart_example_16_0.png" />
+</div>
+</div>
+<p>By calibrating our phase 1 to exclude our “suspect” sample, the control chart is now even more sensitive to out of control values.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Hotelling T2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Hotelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="modules.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, 2020 Francois Dion.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/hotelling control chart example.ipynb.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,460 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>hotelling &#8212; Hotelling T2 0.4.1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Multivariate sample" href="hotelling control chart example.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="hotelling">
+<h1><a class="reference internal" href="#module-hotelling" title="hotelling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hotelling</span></code></a><a class="headerlink" href="#hotelling" title="Permalink to this headline">¶</a></h1>
+<p>Module implementing Hotelling one and two sample tests</p>
+<span class="target" id="module-hotelling"></span><p>Top-level package for Hotelling T2.</p>
+<blockquote>
+<div><span class="target" id="module-hotelling.__init__"></span>Top-level package for Hotelling T2.</div></blockquote>
+<div class="section" id="module-hotelling.stats">
+<span id="hotelling-stats"></span><h2><a class="reference internal" href="#module-hotelling.stats" title="hotelling.stats"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hotelling.stats</span></code></a><a class="headerlink" href="#module-hotelling.stats" title="Permalink to this headline">¶</a></h2>
+<p>Stats.py.</p>
+<p>Hotelling’s T-Squared multivariate test for one sample or two independent samples</p>
+<dl class="docutils">
+<dt>See:</dt>
+<dd><dl class="first last docutils">
+<dt>Hotelling, Harold. (1931). The Generalization of Student’s Ratio. Ann. Math. Statist. 2,</dt>
+<dd>no. 3, 360–378. doi:10.1214/aoms/1177732979.</dd>
+</dl>
+</dd>
+</dl>
+<p><a class="reference external" href="https://projecteuclid.org/euclid.aoms/1177732979">https://projecteuclid.org/euclid.aoms/1177732979</a></p>
+<dl class="function">
+<dt id="hotelling.stats.bessel_correction">
+<code class="descclassname">hotelling.stats.</code><code class="descname">bessel_correction</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#bessel_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.bessel_correction" title="Permalink to this definition">¶</a></dt>
+<dd><p>bessel_correction.</p>
+<p>Sampling tends to underestimate variability of a population. This is due to the fact that we are more likely to
+sample around the mean than near the extremities. Bessel’s correction uses n−1 instead of n which is used to
+calculate variance etc, in order to correct for the bias in the estimation of the population variance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – array-like, samples of observations</li>
+<li><strong>y</strong> – array-like, samples of observations</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">returns x_n - 1, y_n - 1</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.stats.hotelling_dict">
+<code class="descclassname">hotelling.stats.</code><code class="descname">hotelling_dict</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>bessel=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#hotelling_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.hotelling_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>hotelling_dict.</p>
+<p>returns the same values as <cite>hotelling_t2</cite>, but in a dictionary - for API etc</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – array-like, samples of observations for one or two sample test (required)</li>
+<li><strong>y</strong> – for two sample test, array-like, samples of observations (optional), for one sample, list of means to test</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dict</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.stats.hotelling_t2">
+<code class="descclassname">hotelling.stats.</code><code class="descname">hotelling_t2</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em>, <em>bessel=True</em>, <em>S=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#hotelling_t2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.hotelling_t2" title="Permalink to this definition">¶</a></dt>
+<dd><p>hotelling_t2.</p>
+<p>Compute the Hotelling (T2) test statistic.</p>
+<p>It is the multivariate extension of the Student’s t-test.
+Test the null hypothesis that two multivariate samples have the same underlying
+probability distribution, when specifying samples for x and y. The number of samples do not have
+to be the same, but the number of features does have to be equal.</p>
+<p>Equation:</p>
+<p>Hotelling’s t-squared statistic is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}T^2 = n (\\bar{x} - {\mu})^{T} S^{-1} (\\bar{x} - {\mu})\end{split}\]</div>
+<p>Where S is the pooled covariance matrix and ᵀ represents the transpose.</p>
+<p>The two sample t-squared statistic is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}T^2 = (\\bar{x} - \\bar{y})^{T} [S(\\frac1 n_x +\\frac 1 n_y)]^{-1} (\\bar{x}̄ - \\bar{y})\end{split}\]</div>
+<dl class="docutils">
+<dt>References:</dt>
+<dd><ul class="first last simple">
+<li>Hotelling, Harold. (1931). The Generalization of Student’s Ratio. Ann. Math. Statist. 2, no. 3, 360–378.
+doi:10.1214/aoms/1177732979. https://projecteuclid.org/euclid.aoms/1177732979</li>
+<li>Hotelling, Harold. (1955) Les Rapports entre les Methodes Statistiques recentes portant sur des Variables Multiples
+et l’Analyse Factorielle. 107-119.
+In: L’Analyse Factorielle et ses Applications. Centre National de la Recherche Scientifique, Paris.</li>
+<li>Anderson T.W. (1992) Introduction to Hotelling (1931) The Generalization of Student’s Ratio.
+In: Kotz S., Johnson N.L. (eds) Breakthroughs in Statistics.
+Springer Series in Statistics (Perspectives in Statistics). Springer, New York, NY</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – array-like, samples of observations for one or two sample test (required)</li>
+<li><strong>y</strong> – for two sample test, array-like, samples of observations (optional), for one sample, list of means to test</li>
+<li><strong>bessel</strong> – bool, apply bessel correction (default)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><dl class="docutils">
+<dt>statistic: float,</dt>
+<dd><p class="first last">the t2 statistic</p>
+</dd>
+<dt>f_value: float,</dt>
+<dd><p class="first last">the f value</p>
+</dd>
+<dt>p_value: float,</dt>
+<dd><p class="first last">the p value</p>
+</dd>
+<dt>s: 2d array,</dt>
+<dd><p class="first last">the pooled variance</p>
+</dd>
+</dl>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.stats.inverse_covariance_matrix">
+<code class="descclassname">hotelling.stats.</code><code class="descname">inverse_covariance_matrix</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>bessel=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#inverse_covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.inverse_covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>inverse_covariance_matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – array-like, samples of observations</li>
+<li><strong>y</strong> – array-like, samples of observations</li>
+<li><strong>bessel</strong> – bool, apply bessel correction (default)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">float, the pooled variance inverse, the pooled variance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.stats.pooled_covariance_matrix">
+<code class="descclassname">hotelling.stats.</code><code class="descname">pooled_covariance_matrix</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>bessel=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#pooled_covariance_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.pooled_covariance_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>pooled_covariance.</p>
+<p>Compute the pooled covariance matrix</p>
+<p>Equation:</p>
+<p>The pooled covariance matrix is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}S =  \\frac{n_xS_x + n_yS_y}{n_x+n_y}\end{split}\]</div>
+<p>And with bessel correction as:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}S =  \\frac{(n_x-1)S_x + (n_y-1)S_y}{n_x+n_y-2}\end{split}\]</div>
+<p>see: <a class="reference external" href="https://en.wikipedia.org/wiki/Hotelling%27s_T-squared_distribution#Pooled_covariance_matrix">https://en.wikipedia.org/wiki/Hotelling%27s_T-squared_distribution#Pooled_covariance_matrix</a></p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – array-like, samples of observations</li>
+<li><strong>y</strong> – array-like, samples of observations</li>
+<li><strong>bessel</strong> – bool, apply bessel correction (default)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">float, the pooled variance</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hotelling.plots">
+<span id="hotelling-plots"></span><h2><a class="reference internal" href="#module-hotelling.plots" title="hotelling.plots"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hotelling.plots</span></code></a><a class="headerlink" href="#module-hotelling.plots" title="Permalink to this headline">¶</a></h2>
+<p>plot.py.</p>
+<p>Hotelling’s T-Squared multivariate control charts</p>
+<p>See:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Hotelling, Harold. (1931). The Generalization of Student’s Ratio. Ann. Math. Statist. 2,
+no. 3, 360–378. doi:10.1214/aoms/1177732979.</li>
+<li>Tukey, J. W. (1960). A survey of sampling from contaminated distributions. In: Contributions
+to Probability and Statistics. Stanford Univ. Press. 448-85</li>
+<li>Gnanadesikan, R. and J.R. Kettenring (1972). Robust Estimates, Residuals, and Outlier Detection
+with Multiresponse Data. Biometrics 28, 81-124</li>
+</ul>
+</div></blockquote>
+<dl class="function">
+<dt id="hotelling.plots.control_chart">
+<code class="descclassname">hotelling.plots.</code><code class="descname">control_chart</code><span class="sig-paren">(</span><em>x</em>, <em>phase=1</em>, <em>alpha=0.001</em>, <em>x_bar=None</em>, <em>s=None</em>, <em>legend_right=False</em>, <em>interactive=False</em>, <em>width=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#control_chart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.control_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>control_chart.</p>
+<p>Hotellilng Control Chart based on Q / T^2</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – pandas dataframe, uni or multivariate</li>
+<li><strong>phase</strong> – 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control</li>
+<li><strong>alpha</strong> – significance level - used to calculate control lines at α/2 and 1-α/2</li>
+<li><strong>x_bar</strong> – sample mean (optional, required with s)</li>
+<li><strong>s</strong> – sample covariance (optional, required with x_bar)</li>
+<li><strong>legend_right</strong> – default to ‘left’, can specify ‘right’</li>
+<li><strong>interactive</strong> – if  True and plotly is available, renders as interactive plot in notebook. False, render image.</li>
+<li><strong>width</strong> – how many units wide. defaults to 10, good for notebooks</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">matplotlib ax</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.plots.control_interval">
+<code class="descclassname">hotelling.plots.</code><code class="descname">control_interval</code><span class="sig-paren">(</span><em>m</em>, <em>n</em>, <em>f</em>, <em>phase=1</em>, <em>alpha=0.001</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#control_interval"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.control_interval" title="Permalink to this definition">¶</a></dt>
+<dd><p>control_interval.</p>
+<p>For Hotelling control charts, phase 1 is using Qi. This follows a beta distribution, not an F distribution. For
+phase 2 uses future observations. These would follow a known distribution ~ F (Seber, 1984).
+The lower and upper lines are based on the quantiles of the distribution (aka percent point function)
+for α and 1 - α, while the center line is the median (50%).</p>
+<dl class="docutils">
+<dt>See:</dt>
+<dd><ul class="first last simple">
+<li>Seber, G (1984). Multivariate Observations. John Wiley &amp; Sons.</li>
+<li>Nola D. Tracy, John C. Young &amp; Robert L. Mason (1992) Multivariate Control Charts for individual Observations,
+Journal or Quality Technology, 24:2, 88-95, DOI:10.1080/00224065.1992.12015232</li>
+</ul>
+</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>m</strong> – sample groups (between 1 and n)</li>
+<li><strong>n</strong> – number of samples</li>
+<li><strong>f</strong> – number of features in the multivariate samples</li>
+<li><strong>phase</strong> – 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control</li>
+<li><strong>alpha</strong> – significance level - used to calculate control lines at α/2 and 1-α/2</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.plots.control_stats">
+<code class="descclassname">hotelling.plots.</code><code class="descname">control_stats</code><span class="sig-paren">(</span><em>x</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#control_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.control_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>control_stats.</p>
+<p>Compute the sample mean vector and the covariance matrix</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>x</strong> – pandas dataframe, uni or multivariate</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">sample mean, sample covariance</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hotelling.plots.univariate_control_chart">
+<code class="descclassname">hotelling.plots.</code><code class="descname">univariate_control_chart</code><span class="sig-paren">(</span><em>x</em>, <em>var=None</em>, <em>sigma=3</em>, <em>legend_right=False</em>, <em>interactive=False</em>, <em>connected=True</em>, <em>width=10</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#univariate_control_chart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.univariate_control_chart" title="Permalink to this definition">¶</a></dt>
+<dd><p>univariate_control_chart.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – pandas dataframe, uni or multivariate</li>
+<li><strong>var</strong> – optional, variable to plot (default to all)</li>
+<li><strong>sigma</strong> – default to 3 sigma from mean for upper and lower control lines</li>
+<li><strong>legend_right</strong> – default to ‘left’, can specify ‘right’</li>
+<li><strong>interactive</strong> – if plotly is available, renders as interactive plot in notebook. False to render image.</li>
+<li><strong>connected</strong> – defaults to True. Appropriate when time related, else, should be False</li>
+<li><strong>width</strong> – how many units wide. defaults to 10, good for notebooks</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">returns matplotlib figure</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-hotelling.cli">
+<span id="hotelling-cli"></span><h2><a class="reference internal" href="#module-hotelling.cli" title="hotelling.cli"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hotelling.cli</span></code></a><a class="headerlink" href="#module-hotelling.cli" title="Permalink to this headline">¶</a></h2>
+<p>Console script for hotelling.</p>
+</div>
+<div class="section" id="module-hotelling.helpers">
+<span id="hotelling-helpers"></span><h2><a class="reference internal" href="#module-hotelling.helpers" title="hotelling.helpers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hotelling.helpers</span></code></a><a class="headerlink" href="#module-hotelling.helpers" title="Permalink to this headline">¶</a></h2>
+<p>helpers.py.</p>
+<dl class="function">
+<dt id="hotelling.helpers.savefig">
+<code class="descclassname">hotelling.helpers.</code><code class="descname">savefig</code><span class="sig-paren">(</span><em>plt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/helpers.html#savefig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.helpers.savefig" title="Permalink to this definition">¶</a></dt>
+<dd><p>savefig.</p>
+<p>Allows displaying a matplotlib figure to the console terminal. This requires <cite>pysixel</cite> to be pip installed.
+It also requires a terminal with <cite>Sixel graphic</cite> support, like <cite>DEC</cite> with graphic support, Linux <cite>xterm</cite> (started
+with -ti 340), MLTerm (multilingual terminal, available on Windows, Linux etc).</p>
+<p>This is called by the command line stem tool when using -o stdout and can also be used in an ipython session.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>plt</strong> – matplotlib pyplot</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Hotelling T2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Hotelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling control chart example.html">Multivariate sample</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-hotelling.stats"><code class="docutils literal notranslate"><span class="pre">hotelling.stats</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-hotelling.plots"><code class="docutils literal notranslate"><span class="pre">hotelling.plots</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-hotelling.cli"><code class="docutils literal notranslate"><span class="pre">hotelling.cli</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-hotelling.helpers"><code class="docutils literal notranslate"><span class="pre">hotelling.helpers</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="hotelling control chart example.html" title="previous chapter">Multivariate sample</a></li>
+      <li>Next: <a href="contributing.html" title="next chapter">Contributing</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, 2020 Francois Dion.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/modules.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

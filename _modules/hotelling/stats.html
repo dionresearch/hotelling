@@ -1,0 +1,359 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>hotelling.stats &#8212; Hotelling T2 0.4.1 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="../../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for hotelling.stats</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="sd">&quot;&quot;&quot;Stats.py.</span>
+
+<span class="sd">Hotelling&#39;s T-Squared multivariate test for one sample or two independent samples</span>
+
+<span class="sd">See:</span>
+<span class="sd"> Hotelling, Harold. (1931). The Generalization of Student&#39;s Ratio. Ann. Math. Statist. 2,</span>
+<span class="sd">  no. 3, 360--378. doi:10.1214/aoms/1177732979.</span>
+
+<span class="sd">https://projecteuclid.org/euclid.aoms/1177732979</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.stats</span> <span class="kn">import</span> <span class="n">f</span>
+
+
+<div class="viewcode-block" id="bessel_correction"><a class="viewcode-back" href="../../modules.html#hotelling.stats.bessel_correction">[docs]</a><span class="k">def</span> <span class="nf">bessel_correction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;bessel_correction.</span>
+
+<span class="sd">    Sampling tends to underestimate variability of a population. This is due to the fact that we are more likely to</span>
+<span class="sd">    sample around the mean than near the extremities. Bessel&#39;s correction uses n−1 instead of n which is used to</span>
+<span class="sd">    calculate variance etc, in order to correct for the bias in the estimation of the population variance.</span>
+
+<span class="sd">    :param x: array-like, samples of observations</span>
+<span class="sd">    :param y: array-like, samples of observations</span>
+<span class="sd">    :return: returns x_n - 1, y_n - 1</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">n1</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span></div>
+
+
+<div class="viewcode-block" id="inverse_covariance_matrix"><a class="viewcode-back" href="../../modules.html#hotelling.stats.inverse_covariance_matrix">[docs]</a><span class="k">def</span> <span class="nf">inverse_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bessel</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;inverse_covariance_matrix.</span>
+
+<span class="sd">    :param x: array-like, samples of observations</span>
+<span class="sd">    :param y: array-like, samples of observations</span>
+<span class="sd">    :param bessel: bool, apply bessel correction (default)</span>
+<span class="sd">    :return: float, the pooled variance inverse, the pooled variance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span> <span class="k">else</span> <span class="mi">1</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">pooled_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bessel</span><span class="p">)</span>
+    <span class="n">inv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="n">p</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">inv</span><span class="p">,</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="pooled_covariance_matrix"><a class="viewcode-back" href="../../modules.html#hotelling.stats.pooled_covariance_matrix">[docs]</a><span class="k">def</span> <span class="nf">pooled_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bessel</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;pooled_covariance.</span>
+
+<span class="sd">    Compute the pooled covariance matrix</span>
+
+<span class="sd">    Equation:</span>
+
+<span class="sd">    The pooled covariance matrix is defined as:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        S =  \\frac{n_xS_x + n_yS_y}{n_x+n_y}</span>
+
+<span class="sd">    And with bessel correction as:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        S =  \\frac{(n_x-1)S_x + (n_y-1)S_y}{n_x+n_y-2}</span>
+
+<span class="sd">    Reference</span>
+<span class="sd">    ---------</span>
+<span class="sd">    see: https://en.wikipedia.org/wiki/Hotelling%27s_T-squared_distribution#Pooled_covariance_matrix</span>
+
+<span class="sd">    :param x: array-like, samples of observations</span>
+<span class="sd">    :param y: array-like, samples of observations</span>
+<span class="sd">    :param bessel: bool, apply bessel correction (default)</span>
+<span class="sd">    :return: float, the pooled variance</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span> <span class="k">else</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="n">bessel</span><span class="p">:</span>
+        <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">bessel_correction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">x</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">s1</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">y</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="n">s2</span> <span class="o">=</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="p">(</span><span class="n">s1</span> <span class="o">+</span> <span class="n">s2</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="hotelling_t2"><a class="viewcode-back" href="../../modules.html#hotelling.stats.hotelling_t2">[docs]</a><span class="k">def</span> <span class="nf">hotelling_t2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bessel</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;hotelling_t2.</span>
+
+<span class="sd">    Compute the Hotelling (T2) test statistic.</span>
+
+<span class="sd">    It is the multivariate extension of the Student&#39;s t-test.</span>
+<span class="sd">    Test the null hypothesis that two multivariate samples have the same underlying</span>
+<span class="sd">    probability distribution, when specifying samples for x and y. The number of samples do not have</span>
+<span class="sd">    to be the same, but the number of features does have to be equal.</span>
+
+<span class="sd">    Equation:</span>
+
+<span class="sd">    Hotelling&#39;s t-squared statistic is defined as:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        T^2 = n (\\bar{x} - {\mu})^{T} S^{-1} (\\bar{x} - {\mu})</span>
+
+<span class="sd">    Where S is the pooled covariance matrix and ᵀ represents the transpose.</span>
+
+<span class="sd">    The two sample t-squared statistic is defined as:</span>
+
+<span class="sd">    .. math::</span>
+<span class="sd">        T^2 = (\\bar{x} - \\bar{y})^{T} [S(\\frac1 n_x +\\frac 1 n_y)]^{-1} (\\bar{x}̄ - \\bar{y})</span>
+
+<span class="sd">    References:</span>
+<span class="sd">        - Hotelling, Harold. (1931). The Generalization of Student&#39;s Ratio. Ann. Math. Statist. 2, no. 3, 360--378.</span>
+<span class="sd">          doi:10.1214/aoms/1177732979. https://projecteuclid.org/euclid.aoms/1177732979</span>
+
+<span class="sd">        - Hotelling, Harold. (1955) Les Rapports entre les Methodes Statistiques recentes portant sur des Variables Multiples</span>
+<span class="sd">          et l&#39;Analyse Factorielle. 107-119.</span>
+<span class="sd">          In: L&#39;Analyse Factorielle et ses Applications. Centre National de la Recherche Scientifique, Paris.</span>
+
+<span class="sd">        - Anderson T.W. (1992) Introduction to Hotelling (1931) The Generalization of Student’s Ratio.</span>
+<span class="sd">          In: Kotz S., Johnson N.L. (eds) Breakthroughs in Statistics.</span>
+<span class="sd">          Springer Series in Statistics (Perspectives in Statistics). Springer, New York, NY</span>
+
+<span class="sd">    :param x: array-like, samples of observations for one or two sample test (required)</span>
+<span class="sd">    :param y: for two sample test, array-like, samples of observations (optional), for one sample, list of means to test</span>
+<span class="sd">    :param bessel: bool, apply bessel correction (default)</span>
+<span class="sd">    :return:</span>
+<span class="sd">        statistic: float,</span>
+<span class="sd">            the t2 statistic</span>
+<span class="sd">        f_value: float,</span>
+<span class="sd">            the f value</span>
+<span class="sd">        p_value: float,</span>
+<span class="sd">            the p value</span>
+<span class="sd">        s: 2d array,</span>
+<span class="sd">            the pooled variance</span>
+<span class="sd">    &quot;&quot;&quot;</span>  <span class="c1"># noqa: W605</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">nx</span><span class="p">,</span> <span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s2">&quot;list&quot;</span> <span class="ow">in</span> <span class="nb">str</span><span class="p">(</span><span class="n">ex</span><span class="p">):</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="n">nx</span><span class="p">,</span> <span class="o">*</span><span class="n">p</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">p</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Error: The two samples must be in arrays or dataframes format.&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="c1"># samples observed means</span>
+    <span class="n">x_bar</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="n">one_sample</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># One sample T-squared</span>
+        <span class="n">one_sample</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+        <span class="n">ny</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">py</span> <span class="o">=</span> <span class="n">p</span>
+        <span class="n">diff_bar</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">-</span> <span class="n">y</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ny</span><span class="p">,</span> <span class="o">*</span><span class="n">py</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">py</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">one_sample</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="n">py</span> <span class="o">=</span> <span class="n">p</span>
+            <span class="n">diff_bar</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">-</span> <span class="n">y</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Two sample T-squared</span>
+            <span class="n">py</span> <span class="o">=</span> <span class="n">py</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">py</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="n">y_bar</span> <span class="o">=</span> <span class="n">y</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="c1"># difference of means</span>
+            <span class="n">diff_bar</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">-</span> <span class="n">y_bar</span>
+    <span class="k">if</span> <span class="n">p</span> <span class="o">!=</span> <span class="n">py</span><span class="p">:</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Error: the two samples must have the same number of features (</span><span class="si">{</span><span class="n">p</span><span class="si">}</span><span class="s2"> != </span><span class="si">{</span><span class="n">py</span><span class="si">}</span><span class="s2">).&quot;</span>
+        <span class="p">)</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span>
+
+    <span class="c1"># bessel correction ( -1 )</span>
+    <span class="k">if</span> <span class="n">bessel</span><span class="p">:</span>
+        <span class="n">n1</span><span class="p">,</span> <span class="n">n2</span> <span class="o">=</span> <span class="n">bessel_correction</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n1</span> <span class="o">=</span> <span class="n">nx</span>
+        <span class="n">n2</span> <span class="o">=</span> <span class="n">ny</span>
+    <span class="k">if</span> <span class="n">one_sample</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">nx</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">+</span> <span class="n">n2</span>
+
+    <span class="c1"># calculate the T2 statistics</span>
+    <span class="c1"># Technically, we use diff_bar.T for the transpose, but with Pandas, a 1 dimensional dataframe</span>
+    <span class="c1"># is automatically aligned for @ and is not required</span>
+    <span class="k">if</span> <span class="n">one_sample</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cov</span> <span class="o">=</span> <span class="n">S</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cov</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">cov</span><span class="p">()</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cov</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rowvar</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">inv_cov</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">pinv</span><span class="p">(</span><span class="n">cov</span><span class="p">)</span>
+        <span class="n">t2_stat</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">diff_bar</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">inv_cov</span> <span class="o">@</span> <span class="n">diff_bar</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">S</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">t2_stat</span>
+        <span class="c1"># f statistic</span>
+        <span class="c1"># TODO: use chi square instead of f statistic for large sample</span>
+        <span class="n">f_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span> <span class="o">*</span> <span class="n">t2_stat</span> <span class="o">/</span> <span class="p">((</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># pooled covariance</span>
+        <span class="n">inv_s</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">inverse_covariance_matrix</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bessel</span><span class="p">)</span>
+        <span class="n">t2_stat</span> <span class="o">=</span> <span class="n">nx</span> <span class="o">*</span> <span class="n">ny</span> <span class="o">/</span> <span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">diff_bar</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">inv_s</span> <span class="o">@</span> <span class="n">diff_bar</span><span class="p">)</span>
+        <span class="c1"># f statistic</span>
+        <span class="c1"># TODO: use chi square instead of f statistic for large sample</span>
+        <span class="n">f_value</span> <span class="o">=</span> <span class="p">(</span><span class="n">nx</span> <span class="o">+</span> <span class="n">ny</span> <span class="o">-</span> <span class="n">p</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">t2_stat</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span> <span class="o">*</span> <span class="n">p</span><span class="p">)</span>
+
+    <span class="c1"># p-value</span>
+    <span class="n">p_value</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">sf</span><span class="p">(</span><span class="n">f_value</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">n</span> <span class="o">-</span> <span class="n">p</span><span class="p">)</span>  <span class="c1"># survival function, 1 - cdf</span>
+
+    <span class="c1"># return the list of results</span>
+    <span class="k">return</span> <span class="n">t2_stat</span><span class="p">,</span> <span class="n">f_value</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">cov</span> <span class="k">if</span> <span class="n">one_sample</span> <span class="k">else</span> <span class="n">s</span></div>
+
+
+<div class="viewcode-block" id="hotelling_dict"><a class="viewcode-back" href="../../modules.html#hotelling.stats.hotelling_dict">[docs]</a><span class="k">def</span> <span class="nf">hotelling_dict</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">bessel</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;hotelling_dict.</span>
+
+<span class="sd">    returns the same values as `hotelling_t2`, but in a dictionary - for API etc</span>
+
+<span class="sd">    :param x: array-like, samples of observations for one or two sample test (required)</span>
+<span class="sd">    :param y: for two sample test, array-like, samples of observations (optional), for one sample, list of means to test</span>
+<span class="sd">    :return: dict</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">t2_stat</span><span class="p">,</span> <span class="n">f_stat</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="n">hotelling_t2</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">bessel</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">t2_stat</span><span class="o">=</span><span class="n">t2_stat</span><span class="p">,</span> <span class="n">f_stat</span><span class="o">=</span><span class="n">f_stat</span><span class="p">,</span> <span class="n">p_value</span><span class="o">=</span><span class="n">p_value</span><span class="p">,</span> <span class="n">pooled_var</span><span class="o">=</span><span class="n">s</span><span class="p">)</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">Hotelling T2</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Hotelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling control chart example.html">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2019, 2020 Francois Dion.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.8.5</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
