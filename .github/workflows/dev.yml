@@ -26,7 +26,7 @@ jobs:
 
       - shell: bash -l {0}
         run: |
-          conda install click matplotlib pandas plotly scipy flake8 sphinx pandoc -y -q
+          conda install ipython click matplotlib pandas plotly scipy flake8 sphinx pandoc -y -q
           python -m pip install -r requirements_dev.txt
           python -m pip install .
 
