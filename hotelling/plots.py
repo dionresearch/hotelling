@@ -1,13 +1,16 @@
 # -*- coding: utf-8 -*-
-"""
+"""plot.py.
 
 Hotelling's T-Squared multivariate control charts
 
 See:
 
-    - Hotelling, Harold. (1931). The Generalization of Student's Ratio. Ann. Math. Statist. 2, no. 3, 360--378. doi:10.1214/aoms/1177732979.
-    - Tukey, J. W. (1960). A survey of sampling from contaminated distributions. In: Contributions to Probability and Statistics. Stanford Univ. Press. 448-85
-    - Gnanadesikan, R. and J.R. Kettenring (1972). Robust Estimates, Residuals, and Outlier Detection with Multiresponse Data. Biometrics 28, 81-124
+  - Hotelling, Harold. (1931). The Generalization of Student's Ratio. Ann. Math. Statist. 2,
+    no. 3, 360--378. doi:10.1214/aoms/1177732979.
+  - Tukey, J. W. (1960). A survey of sampling from contaminated distributions. In: Contributions
+    to Probability and Statistics. Stanford Univ. Press. 448-85
+  - Gnanadesikan, R. and J.R. Kettenring (1972). Robust Estimates, Residuals, and Outlier Detection
+    with Multiresponse Data. Biometrics 28, 81-124
 
 """
 import matplotlib.pyplot as plt
@@ -18,7 +21,7 @@ from warnings import warn
 import pandas as pd
 
 try:
-    from plotly.offline import iplot_mpl, iplot
+    from plotly.offline import iplot
     from plotly.subplots import make_subplots
     import plotly.tools as tls
     plotly_module = True
@@ -28,7 +31,7 @@ from scipy import stats
 
 
 def control_interval(m, n, f, phase=1, alpha=0.001):
-    """control_interval
+    """control_interval.
 
     For Hotelling control charts, phase 1 is using Qi. This follows a beta distribution, not an F distribution. For
     phase 2 uses future observations. These would follow a known distribution ~ F (Seber, 1984).
@@ -73,7 +76,7 @@ def control_interval(m, n, f, phase=1, alpha=0.001):
 
 
 def control_stats(x):
-    """control_stats
+    """control_stats.
 
     Compute the sample mean vector and the covariance matrix
 
@@ -93,7 +96,7 @@ def control_chart(
     interactive=False,
     width=10,
 ):
-    """control_chart
+    """control_chart.
 
     Hotellilng Control Chart based on Q / T^2
 
@@ -114,10 +117,10 @@ def control_chart(
     if x_bar is None and s is None:
         x_bar, s = control_stats(x)
     elif x_bar is None or s is None:
-        warn(f"Error: must specify both x_bar and s, or none at all.")
+        warn("Error: must specify both x_bar and s, or none at all.")
         raise ValueError
 
-    qi = [hotelling_t2(x[i : i + 1], x_bar, S=s) for i in range(n)]
+    qi = [hotelling_t2(x[i: i + 1], x_bar, S=s) for i in range(n)]
     q = pd.Series(qi)
     ax = q.plot(
         title=f"Hotelling Control Chart (α={alpha}, phase={phase})",
@@ -204,8 +207,7 @@ def univariate_control_chart(
     connected=True,
     width=10,
 ):
-    """univariate_control_chart
-
+    """univariate_control_chart.
 
     :param x: pandas dataframe, uni or multivariate
     :param var: optional, variable to plot (default to all)

@@ -1,0 +1,77 @@
+name: Hotelling dev steps w/Miniconda
+on:
+  push:
+  pull_request:
+
+jobs:
+  testenv:
+    name: Conda env with Python ${{ matrix.python-version }}, ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+        fail-fast: false
+        matrix:
+            os: ["ubuntu-latest"]
+            python-version: ["3.8", "3.7"]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          activate-environment: hotelling
+          python-version: ${{ matrix.python-version }}
+          auto-activate-base: false
+      - shell: bash -l {0}
+        run: |
+          conda info
+
+      - shell: bash -l {0}
+        run: |
+          conda install click matplotlib pandas plotly scipy flake8 sphinx pandoc -y -q
+          python -m pip install -r requirements_dev.txt
+          python -m pip install .
+
+      - shell: bash -l {0}
+        run: conda list
+
+      - name: Lint
+        shell: bash -l {0}
+        run: |
+            flake8 --count --show-source --max-line-length=127 --statistics hotelling/
+            flake8 --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics hotelling/
+
+      - name: Code Documentation check
+        shell: bash -l {0}
+        run: |
+          pydocstyle hotelling/
+
+      - name: User Documentation check
+        shell: bash -l {0}
+        run: |
+          proselint README.md
+
+      - name: Unit tests
+        shell: bash -l {0}
+        run: |
+            cd tests
+            pytest --emoji -v --md ../docs/tests.md .
+            pytest --cov-report term --cov=mariner . > coverage.txt
+
+      - uses: machine-learning-apps/pr-comment@master
+        if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request' && matrix.python-version == '3.8'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          path: coverage.txt
+
+      - name: API doc build
+        shell: bash -l {0}
+        run: |
+          cd docs
+          make html
+
+      - name: Push doc to Github Pages
+        if: matrix.python-version == '3.8'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: docs/_build/html

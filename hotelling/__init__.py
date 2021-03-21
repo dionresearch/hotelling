@@ -4,4 +4,4 @@
 
 __author__ = """Francois Dion"""
 __email__ = 'fdion@dionresearch.com'
-__version__ = '0.4.0'
+__version__ = '0.4.1'

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
+from hotelling import __version__ as version
 
 with open("README.rst") as readme_file:
     readme = readme_file.read()
@@ -8,7 +9,7 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["docopt", "scipy", "matplotlib", "pandas", "numpy"]
+requirements = ["click", "scipy", "matplotlib", "pandas", "numpy"]
 
 setup_requirements = ["pytest-runner"]
 
@@ -17,7 +18,7 @@ test_requirements = ["pytest>=3.5"]
 setup(
     author="Francois Dion",
     author_email="fdion@dionresearch.com",
-    python_requires=">=3.5",
+    python_requires=">=3.6",
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
         "Intended Audience :: Developers",
@@ -41,6 +42,6 @@ setup(
     test_suite="tests",
     tests_require=test_requirements,
     url="https://github.com/dionresearch/hotelling",
-    version="0.4.0",
+    version=version,
     zip_safe=False,
 )

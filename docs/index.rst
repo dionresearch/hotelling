@@ -1,5 +1,5 @@
 Welcome to Hotelling T2's documentation!
-======================================
+========================================
 
 .. toctree::
    :maxdepth: 2
@@ -8,10 +8,12 @@ Welcome to Hotelling T2's documentation!
    readme
    installation
    usage
+   hotelling control chart example.ipynb
    modules
    contributing
    authors
    history
+   tests.md
 
 Indices and tables
 ==================

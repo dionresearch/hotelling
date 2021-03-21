@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-"""
+"""Stats.py.
 
 Hotelling's T-Squared multivariate test for one sample or two independent samples
 
-See: Hotelling, Harold. (1931). The Generalization of Student's Ratio. Ann. Math. Statist. 2, no. 3, 360--378. doi:10.1214/aoms/1177732979.
+See:
+ Hotelling, Harold. (1931). The Generalization of Student's Ratio. Ann. Math. Statist. 2,
+  no. 3, 360--378. doi:10.1214/aoms/1177732979.
 
 https://projecteuclid.org/euclid.aoms/1177732979
-
 """
 from warnings import warn
 
@@ -15,7 +16,7 @@ from scipy.stats import f
 
 
 def bessel_correction(x, y):
-    """ bessel correction
+    """bessel_correction.
 
     Sampling tends to underestimate variability of a population. This is due to the fact that we are more likely to
     sample around the mean than near the extremities. Bessel's correction uses n−1 instead of n which is used to
@@ -34,7 +35,7 @@ def bessel_correction(x, y):
 
 
 def inverse_covariance_matrix(x, y, bessel=True):
-    """
+    """inverse_covariance_matrix.
 
     :param x: array-like, samples of observations
     :param y: array-like, samples of observations
@@ -49,7 +50,7 @@ def inverse_covariance_matrix(x, y, bessel=True):
 
 
 def pooled_covariance_matrix(x, y, bessel=True):
-    """ pooled covariance
+    r"""pooled_covariance.
 
     Compute the pooled covariance matrix
 
@@ -96,7 +97,8 @@ def pooled_covariance_matrix(x, y, bessel=True):
 
 
 def hotelling_t2(x, y=None, bessel=True, S=None):
-    """
+    r"""hotelling_t2.
+    
     Compute the Hotelling (T2) test statistic.
 
     It is the multivariate extension of the Student's t-test.
@@ -118,9 +120,7 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
     .. math::
         T^2 = (\\bar{x} - \\bar{y})^{T} [S(\\frac1 n_x +\\frac 1 n_y)]^{-1} (\\bar{x}̄ - \\bar{y})
 
-
     References:
-
         - Hotelling, Harold. (1931). The Generalization of Student's Ratio. Ann. Math. Statist. 2, no. 3, 360--378.
           doi:10.1214/aoms/1177732979. https://projecteuclid.org/euclid.aoms/1177732979
 
@@ -144,8 +144,7 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
             the p value
         s: 2d array,
             the pooled variance
-    """
-
+    """  # noqa: W605
     try:
         nx, p = x.shape
     except AttributeError as ex:
@@ -155,7 +154,7 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
             p = p[0] if p else 1
             y = np.asarray(y)
         else:
-            warn(f"Error: The two samples must be in arrays or dataframes format.")
+            warn("Error: The two samples must be in arrays or dataframes format.")
             raise ValueError
 
     # samples observed means
@@ -233,7 +232,7 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
 
 
 def hotelling_dict(x, y=None, bessel=True):
-    """ hotelling_dict
+    """hotelling_dict.
 
     returns the same values as `hotelling_t2`, but in a dictionary - for API etc
 

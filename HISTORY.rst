@@ -2,6 +2,12 @@
 History
 =======
 
+0.4.1 (2020-07-26)
+------------------
+* --chart option to cli
+* --output <filename} or 'stdout'  option to cli
+* support for sixel display with pysixel
+
 0.4.0 (2020-07-26)
 ------------------
 
