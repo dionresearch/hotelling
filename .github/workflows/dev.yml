@@ -71,9 +71,9 @@ jobs:
       - name: run notebooks
         shell: bash -l {0}
         run: |
-          jupyter nbconvert --to notebook --execute notebooks/hotelling\ control\ chart\ example.ipynb --output docs/hotelling\ control\ chart\ example.ipynb
-          jupyter nbconvert --to notebook --execute notebooks/hotelling\ cusum.ipynb --output docs/hotelling\ cusum.ipynb
-          jupyter nbconvert --to notebook --execute notebooks/hotelling\ with\ plotly.ipynb --output docs/hotelling\ with\ plotly.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling\ control\ chart\ example.ipynb --output ../docs/hotelling\ control\ chart\ example.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling\ cusum.ipynb --output ../docs/hotelling\ cusum.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling\ with\ plotly.ipynb --output ../docs/hotelling\ with\ plotly.ipynb
 
       - name: API doc build
         shell: bash -l {0}
