@@ -2,7 +2,7 @@
 History
 =======
 
-0.4.2 (2021-03-28)
+0.4.3 (2021-03-28)
 ------------------
 * plotly template(s) can be passed as argument
 * added cusum and cusum options
