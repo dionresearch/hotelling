@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>hotelling.plots &#8212; Hotelling T2 0.4.1 documentation</title>
+    <title>hotelling.plots &#8212; Hotelling T2 0.4.2 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
@@ -51,21 +51,22 @@
 <span class="sd">    with Multiresponse Data. Biometrics 28, 81-124</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
-<span class="kn">from</span> <span class="nn">hotelling.stats</span> <span class="kn">import</span> <span class="n">hotelling_t2</span>
-
 <span class="kn">from</span> <span class="nn">warnings</span> <span class="kn">import</span> <span class="n">warn</span>
 
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">plotly.offline</span> <span class="kn">import</span> <span class="n">iplot</span>
     <span class="kn">from</span> <span class="nn">plotly.subplots</span> <span class="kn">import</span> <span class="n">make_subplots</span>
     <span class="kn">import</span> <span class="nn">plotly.tools</span> <span class="k">as</span> <span class="nn">tls</span>
+
     <span class="n">plotly_module</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
     <span class="n">plotly_module</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+
+<span class="kn">from</span> <span class="nn">hotelling.stats</span> <span class="kn">import</span> <span class="n">hotelling_t2</span>
 
 
 <div class="viewcode-block" id="control_interval"><a class="viewcode-back" href="../../modules.html#hotelling.plots.control_interval">[docs]</a><span class="k">def</span> <span class="nf">control_interval</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
@@ -133,10 +134,14 @@
     <span class="n">legend_right</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">cusum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">ooc_marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;control_chart.</span>
 
-<span class="sd">    Hotellilng Control Chart based on Q / T^2</span>
+<span class="sd">    Hotelling Control Chart based on Q / T^2</span>
 
 <span class="sd">    :param x: pandas dataframe, uni or multivariate</span>
 <span class="sd">    :param phase: 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control</span>
@@ -146,7 +151,11 @@
 <span class="sd">    :param legend_right: default to &#39;left&#39;, can specify &#39;right&#39;</span>
 <span class="sd">    :param interactive: if  True and plotly is available, renders as interactive plot in notebook. False, render image.</span>
 <span class="sd">    :param width: how many units wide. defaults to 10, good for notebooks</span>
-<span class="sd">    :return: matplotlib ax</span>
+<span class="sd">    :param cusum: use cumulative sum instead of average</span>
+<span class="sd">    :param template: plotly template, defaults to &#39;none&#39;, matching default matplotlib</span>
+<span class="sd">    :param marker: default marker symbol - one valid for matplotlib</span>
+<span class="sd">    :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib</span>
+<span class="sd">    :return: matplotlib ax / plotly fig</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span><span class="p">,</span> <span class="n">f</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">n</span>
@@ -159,17 +168,25 @@
         <span class="k">raise</span> <span class="ne">ValueError</span>
 
     <span class="n">qi</span> <span class="o">=</span> <span class="p">[</span><span class="n">hotelling_t2</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="n">x_bar</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
-    <span class="n">q</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">qi</span><span class="p">)</span>
-    <span class="n">ax</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Hotelling Control Chart (α=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">, phase=</span><span class="si">{</span><span class="n">phase</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
-        <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span><span class="s2">&quot;qi&quot;</span><span class="p">:</span> <span class="n">qi</span><span class="p">})</span>
+
+    <span class="n">lcl</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">ucl</span> <span class="o">=</span> <span class="n">control_interval</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
+
+    <span class="n">cusum_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">cusum</span><span class="p">:</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;qi&quot;</span><span class="p">]</span> <span class="o">-</span> <span class="n">cl</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span> <span class="o">+</span> <span class="n">cl</span>
+        <span class="n">cusum_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; w/deviation (ref=</span><span class="si">{</span><span class="n">cl</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">title</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Hotelling Control Chart (α=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">, phase=</span><span class="si">{</span><span class="n">phase</span><span class="si">}{</span><span class="n">cusum_text</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">,</span>
+        <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span>
         <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;samples&quot;</span><span class="p">)</span>
 
-    <span class="n">lcl</span><span class="p">,</span> <span class="n">cl</span><span class="p">,</span> <span class="n">ucl</span> <span class="o">=</span> <span class="n">control_interval</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">phase</span><span class="o">=</span><span class="n">phase</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="n">alpha</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">q</span><span class="p">[(</span><span class="n">q</span> <span class="o">&gt;</span> <span class="n">ucl</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">q</span> <span class="o">&lt;</span> <span class="n">lcl</span><span class="p">)]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">)</span>
+        <span class="n">df</span><span class="p">[(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;qi&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ucl</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;qi&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lcl</span><span class="p">)]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="n">ooc_marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">legend</span><span class="o">=</span><span class="kc">None</span>
+        <span class="p">)</span>
     <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="c1"># nothing to plot</span>
         <span class="k">pass</span>
@@ -231,6 +248,7 @@
                 <span class="n">y1</span><span class="o">=</span><span class="n">var</span><span class="p">,</span>
                 <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s2">&quot;dashdot&quot;</span><span class="p">,),</span>
             <span class="p">)</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">)</span>
         <span class="n">iplot</span><span class="p">(</span><span class="n">fig</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ax</span></div>
@@ -244,6 +262,11 @@
     <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
     <span class="n">connected</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
     <span class="n">width</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="n">cusum</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">cusum_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">template</span><span class="o">=</span><span class="s2">&quot;none&quot;</span><span class="p">,</span>
+    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+    <span class="n">ooc_marker</span><span class="o">=</span><span class="s2">&quot;x&quot;</span><span class="p">,</span>
 <span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;univariate_control_chart.</span>
 
@@ -252,13 +275,19 @@
 <span class="sd">    :param sigma: default to 3 sigma from mean for upper and lower control lines</span>
 <span class="sd">    :param legend_right: default to &#39;left&#39;, can specify &#39;right&#39;</span>
 <span class="sd">    :param interactive: if plotly is available, renders as interactive plot in notebook. False to render image.</span>
-<span class="sd">    :param connected: defaults to True. Appropriate when time related, else, should be False</span>
+<span class="sd">    :param connected: defaults to True. Appropriate when time related /consecutive batches, else, should be False</span>
 <span class="sd">    :param width: how many units wide. defaults to 10, good for notebooks</span>
+<span class="sd">    :param cusum: use cumulative sum instead of average</span>
+<span class="sd">    :param cusum_only: don&#39;t display values, just cusum referenced to 0</span>
+<span class="sd">    :param template: plotly template, defaults to &#39;none&#39;, matching default matplotlib</span>
+<span class="sd">    :param marker: default marker symbol (o) - one valid for matplotlib</span>
+<span class="sd">    :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib</span>
 <span class="sd">    :return: returns matplotlib figure</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">n</span><span class="p">,</span> <span class="o">*</span><span class="n">f</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">shape</span>
 
-    <span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
+    <span class="n">df</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">num_plots</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
     <span class="n">k</span> <span class="o">=</span> <span class="n">sigma</span>  <span class="c1"># 3 sigma default</span>
     <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
         <span class="n">fig</span> <span class="o">=</span> <span class="n">make_subplots</span><span class="p">(</span><span class="n">rows</span><span class="o">=</span><span class="n">num_plots</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -267,7 +296,7 @@
     <span class="n">ax</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">num_plots</span><span class="p">))</span>
 
     <span class="n">layout</span> <span class="o">=</span> <span class="p">(</span><span class="n">num_plots</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span> <span class="o">+</span> <span class="mi">11</span>
-    <span class="n">features</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">var</span><span class="p">]</span>
+    <span class="n">features</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="k">if</span> <span class="n">var</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[</span><span class="n">var</span><span class="p">]</span>
     <span class="n">x_pos</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;left&quot;</span>
     <span class="k">if</span> <span class="n">legend_right</span><span class="p">:</span>
@@ -275,30 +304,48 @@
         <span class="n">align</span> <span class="o">=</span> <span class="s2">&quot;right&quot;</span>
 
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">features</span><span class="p">):</span>
-        <span class="n">x_bar</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
-        <span class="n">ucl</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
-        <span class="n">lcl</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="n">x_bar</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+        <span class="n">cusum_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="n">columns</span> <span class="o">=</span> <span class="n">var</span>
+        <span class="k">if</span> <span class="n">cusum</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">cusum_only</span><span class="p">:</span>
+                <span class="n">columns</span> <span class="o">=</span> <span class="s2">&quot;deviation&quot;</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_bar</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span>
+                <span class="n">cusum_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; cumulative deviation (ref=</span><span class="si">{</span><span class="n">x_bar</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="p">,</span> <span class="s2">&quot;deviation&quot;</span><span class="p">]</span>
+                <span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">-</span> <span class="n">x_bar</span><span class="p">)</span><span class="o">.</span><span class="n">cumsum</span><span class="p">()</span> <span class="o">+</span> <span class="p">(</span><span class="n">x_bar</span><span class="p">)</span>
+                <span class="n">cusum_text</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; w/deviation (ref=</span><span class="si">{</span><span class="n">x_bar</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="n">ucl</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">+</span> <span class="n">k</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
+        <span class="n">lcl</span> <span class="o">=</span> <span class="n">x_bar</span> <span class="o">-</span> <span class="n">k</span> <span class="o">*</span> <span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">std</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">interactive</span><span class="p">:</span>
             <span class="n">mpl_fig</span><span class="p">,</span> <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">fig</span><span class="o">.</span><span class="n">add_subplot</span><span class="p">(</span><span class="n">layout</span> <span class="o">+</span> <span class="n">i</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">connected</span><span class="p">:</span>
-            <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">)</span>
+            <span class="n">df</span><span class="p">[</span><span class="n">columns</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">][(</span><span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ucl</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lcl</span><span class="p">)]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-                <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;None&quot;</span>
-            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">cusum_only</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">][(</span><span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">ucl</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">lcl</span><span class="p">)]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+                    <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="n">ooc_marker</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span>
+                <span class="p">)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="c1"># no outliers</span>
             <span class="k">pass</span>
-        <span class="n">x_min</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-        <span class="n">x_max</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
-        <span class="n">y_low</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lcl</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-        <span class="n">y_high</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">ucl</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="n">x</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cusum_only</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="n">y_low</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">lcl</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+            <span class="n">y_high</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="n">ucl</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">var</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="k">elif</span> <span class="n">cusum</span><span class="p">:</span>
+            <span class="n">y_low</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()</span> <span class="o">-</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">()),</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">y_high</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">+</span> <span class="mf">0.1</span> <span class="o">*</span> <span class="nb">abs</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;deviation&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Error: must specify cusum=True when using cusum_only=True.&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">plotly_module</span> <span class="ow">and</span> <span class="n">interactive</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">plotly_module</span> <span class="ow">and</span> <span class="n">interactive</span> <span class="ow">and</span> <span class="n">cusum_only</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">ucl_text</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
                 <span class="n">x</span><span class="o">=</span><span class="n">x_pos</span><span class="p">,</span>
                 <span class="n">y</span><span class="o">=</span><span class="n">ucl</span> <span class="o">+</span> <span class="mf">0.2</span><span class="p">,</span>
@@ -326,7 +373,7 @@
                 <span class="n">yref</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
                 <span class="n">font</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">family</span><span class="o">=</span><span class="s2">&quot;serif&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;red&quot;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
             <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">cusum_only</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
             <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span>
                 <span class="n">ucl</span><span class="p">,</span> <span class="n">xmin</span><span class="o">=</span><span class="n">x_min</span><span class="p">,</span> <span class="n">xmax</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s2">&quot;dashed&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;UCL&quot;</span>
             <span class="p">)</span>
@@ -366,22 +413,31 @@
                 <span class="n">fontdict</span><span class="o">=</span><span class="n">font_dict</span><span class="p">,</span>
                 <span class="n">horizontalalignment</span><span class="o">=</span><span class="n">align</span><span class="p">,</span>
             <span class="p">)</span>
-        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Univariate Control Chart for </span><span class="si">{</span><span class="n">var</span><span class="si">}</span><span class="s2"> (σ=</span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">set_text</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;Univariate Control Chart for </span><span class="si">{</span><span class="n">var</span><span class="si">}{</span><span class="n">cusum_text</span><span class="si">}</span><span class="s2"> (σ=</span><span class="si">{</span><span class="n">sigma</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">plotly_module</span> <span class="ow">and</span> <span class="n">interactive</span><span class="p">:</span>
             <span class="n">pfig</span> <span class="o">=</span> <span class="n">tls</span><span class="o">.</span><span class="n">mpl_to_plotly</span><span class="p">(</span><span class="n">mpl_fig</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">ucl</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">lcl</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">x_bar</span><span class="p">,</span> <span class="s2">&quot;Black&quot;</span><span class="p">)]:</span>
-                <span class="n">pfig</span><span class="o">.</span><span class="n">add_shape</span><span class="p">(</span>
-                    <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span>
-                    <span class="n">x0</span><span class="o">=</span><span class="n">x_min</span><span class="p">,</span>
-                    <span class="n">y0</span><span class="o">=</span><span class="n">var</span><span class="p">,</span>
-                    <span class="n">x1</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span>
-                    <span class="n">y1</span><span class="o">=</span><span class="n">var</span><span class="p">,</span>
-                    <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s2">&quot;dashdot&quot;</span><span class="p">,),</span>
-                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">cusum_only</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">var</span><span class="p">,</span> <span class="n">col</span> <span class="ow">in</span> <span class="p">[(</span><span class="n">ucl</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">lcl</span><span class="p">,</span> <span class="s2">&quot;Red&quot;</span><span class="p">),</span> <span class="p">(</span><span class="n">x_bar</span><span class="p">,</span> <span class="s2">&quot;Black&quot;</span><span class="p">)]:</span>
+                    <span class="n">pfig</span><span class="o">.</span><span class="n">add_shape</span><span class="p">(</span>
+                        <span class="nb">type</span><span class="o">=</span><span class="s2">&quot;line&quot;</span><span class="p">,</span>
+                        <span class="n">x0</span><span class="o">=</span><span class="n">x_min</span><span class="p">,</span>
+                        <span class="n">y0</span><span class="o">=</span><span class="n">var</span><span class="p">,</span>
+                        <span class="n">x1</span><span class="o">=</span><span class="n">x_max</span><span class="p">,</span>
+                        <span class="n">y1</span><span class="o">=</span><span class="n">var</span><span class="p">,</span>
+                        <span class="n">line</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">col</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">dash</span><span class="o">=</span><span class="s2">&quot;dashdot&quot;</span><span class="p">,),</span>
+                    <span class="p">)</span>
             <span class="n">pfig</span><span class="o">.</span><span class="n">update_xaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="n">x_min</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">x_max</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">pfig</span><span class="o">.</span><span class="n">update_yaxes</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="n">y_low</span><span class="p">,</span> <span class="n">y_high</span><span class="p">))</span>
-            <span class="n">pfig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">annotations</span><span class="o">=</span><span class="p">[</span><span class="n">ucl_text</span><span class="p">,</span> <span class="n">mean_text</span><span class="p">,</span> <span class="n">lcl_text</span><span class="p">])</span>  <span class="c1"># noqa</span>
+            <span class="n">annotations</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">cusum_only</span> <span class="k">else</span> <span class="p">[</span><span class="n">ucl_text</span><span class="p">,</span> <span class="n">mean_text</span><span class="p">,</span> <span class="n">lcl_text</span><span class="p">]</span>
+            <span class="n">pfig</span><span class="o">.</span><span class="n">update_layout</span><span class="p">(</span><span class="n">margin</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">l</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>  <span class="c1"># noqa</span>
+                <span class="n">yaxis_tickmode</span><span class="o">=</span><span class="s2">&quot;auto&quot;</span><span class="p">,</span>
+                <span class="n">annotations</span><span class="o">=</span><span class="n">annotations</span><span class="p">,</span>
+                <span class="n">template</span><span class="o">=</span><span class="n">template</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">iplot</span><span class="p">(</span><span class="n">pfig</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">interactive</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fig</span></div>
@@ -408,7 +464,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../../readme.html">Hotelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../hotelling control chart example.html">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling control chart example.html">Hotelling control chart example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling control chart example.html#Multivariate-sample">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling cusum.html">Cumulative Sum of deviations control charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling cusum.html#Multivariate-sample">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling cusum.html#Multivariate-control-chart-w/cusum">Multivariate control chart w/cusum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling cusum.html#Univariate-control-charts-with-cusum">Univariate control charts with cusum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling with plotly.html">Hotelling control charts with Plotly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../hotelling with plotly.html#Multivariate-sample">Multivariate sample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>

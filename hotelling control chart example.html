@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Multivariate sample &#8212; Hotelling T2 0.4.1 documentation</title>
+    <title>Hotelling control chart example &#8212; Hotelling T2 0.4.2 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -19,7 +19,7 @@
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="hotelling" href="modules.html" />
+    <link rel="next" title="Cumulative Sum of deviations control charts" href="hotelling cusum.html" />
     <link rel="prev" title="Usage" href="usage.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -285,6 +285,8 @@ div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
+<div class="section" id="Hotelling-control-chart-example">
+<h1>Hotelling control chart example<a class="headerlink" href="#Hotelling-control-chart-example" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -293,6 +295,7 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">hotelling.plots</span> <span class="kn">import</span> <span class="n">control_chart</span><span class="p">,</span> <span class="n">control_stats</span><span class="p">,</span> <span class="n">univariate_control_chart</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="Multivariate-sample">
@@ -377,20 +380,24 @@ div.rendered_html tbody tr:hover {
 <div class="highlight"><pre>
 Help on function control_chart in module hotelling.plots:
 
-control_chart(x, phase=1, alpha=0.001, x_bar=None, s=None, legend_right=False, interactive=False, width=10)
-    control_chart
+control_chart(x, phase=1, alpha=0.001, x_bar=None, s=None, legend_right=False, interactive=False, width=10, cusum=False, template=&#39;none&#39;, marker=&#39;o&#39;, ooc_marker=&#39;x&#39;)
+    control_chart.
 
-    Hotellilng Control Chart based on Q / T^2
+    Hotelling Control Chart based on Q / T^2
 
     :param x: pandas dataframe, uni or multivariate
     :param phase: 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control
     :param alpha: significance level - used to calculate control lines at α/2 and 1-α/2
-    :param x_bar: sample mean
-    :param s: sample covariance
+    :param x_bar: sample mean (optional, required with s)
+    :param s: sample covariance (optional, required with x_bar)
     :param legend_right: default to &#39;left&#39;, can specify &#39;right&#39;
-    :param interactive: if plotly is available, renders as interactive plot in notebook. False to render image.
+    :param interactive: if  True and plotly is available, renders as interactive plot in notebook. False, render image.
     :param width: how many units wide. defaults to 10, good for notebooks
-    :return: matplotlib ax
+    :param cusum: use cumulative sum instead of average
+    :param template: plotly template, defaults to &#39;none&#39;, matching default matplotlib
+    :param marker: default marker symbol - one valid for matplotlib
+    :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib
+    :return: matplotlib ax / plotly fig
 
 </pre></div></div>
 </div>
@@ -407,7 +414,7 @@ control_chart(x, phase=1, alpha=0.001, x_bar=None, s=None, legend_right=False, i
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotelling_control_chart_example_4_0.png" src="_images/hotelling_control_chart_example_4_0.png" />
+<img alt="_images/hotelling_control_chart_example_5_0.png" src="_images/hotelling_control_chart_example_5_0.png" />
 </div>
 </div>
 <p>At alpha = 0.01, it appears sample 1 and sample 4 are out of control. We investigate the individual variables, to see if we can learn more about this.</p>
@@ -427,17 +434,21 @@ control_chart(x, phase=1, alpha=0.001, x_bar=None, s=None, legend_right=False, i
 <div class="highlight"><pre>
 Help on function univariate_control_chart in module hotelling.plots:
 
-univariate_control_chart(x, var=None, sigma=3, legend_right=False, interactive=False, connected=True, width=10)
-    univariate_control_chart
-
+univariate_control_chart(x, var=None, sigma=3, legend_right=False, interactive=False, connected=True, width=10, cusum=False, cusum_only=False, template=&#39;none&#39;, marker=&#39;o&#39;, ooc_marker=&#39;x&#39;)
+    univariate_control_chart.
 
     :param x: pandas dataframe, uni or multivariate
     :param var: optional, variable to plot (default to all)
     :param sigma: default to 3 sigma from mean for upper and lower control lines
     :param legend_right: default to &#39;left&#39;, can specify &#39;right&#39;
     :param interactive: if plotly is available, renders as interactive plot in notebook. False to render image.
-    :param connected: defaults to True. Appropriate when time related, else, should be False
+    :param connected: defaults to True. Appropriate when time related /consecutive batches, else, should be False
     :param width: how many units wide. defaults to 10, good for notebooks
+    :param cusum: use cumulative sum instead of average
+    :param cusum_only: don&#39;t display values, just cusum referenced to 0
+    :param template: plotly template, defaults to &#39;none&#39;, matching default matplotlib
+    :param marker: default marker symbol (o) - one valid for matplotlib
+    :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib
     :return: returns matplotlib figure
 
 </pre></div></div>
@@ -487,85 +498,85 @@ univariate_control_chart(x, var=None, sigma=3, legend_right=False, interactive=F
   </thead>
   <tbody>
     <tr>
-      <td>1</td>
+      <th>1</th>
       <td>14.92</td>
       <td>85.77</td>
       <td>42.26</td>
     </tr>
     <tr>
-      <td>2</td>
+      <th>2</th>
       <td>16.90</td>
       <td>83.77</td>
       <td>43.44</td>
     </tr>
     <tr>
-      <td>3</td>
+      <th>3</th>
       <td>17.38</td>
       <td>84.46</td>
       <td>42.74</td>
     </tr>
     <tr>
-      <td>4</td>
+      <th>4</th>
       <td>16.90</td>
       <td>86.27</td>
       <td>43.60</td>
     </tr>
     <tr>
-      <td>5</td>
+      <th>5</th>
       <td>16.92</td>
       <td>85.23</td>
       <td>43.18</td>
     </tr>
     <tr>
-      <td>6</td>
+      <th>6</th>
       <td>16.71</td>
       <td>83.81</td>
       <td>43.72</td>
     </tr>
     <tr>
-      <td>7</td>
+      <th>7</th>
       <td>17.07</td>
       <td>86.08</td>
       <td>43.33</td>
     </tr>
     <tr>
-      <td>8</td>
+      <th>8</th>
       <td>16.93</td>
       <td>85.85</td>
       <td>43.41</td>
     </tr>
     <tr>
-      <td>9</td>
+      <th>9</th>
       <td>16.71</td>
       <td>85.73</td>
       <td>43.28</td>
     </tr>
     <tr>
-      <td>10</td>
+      <th>10</th>
       <td>16.88</td>
       <td>86.27</td>
       <td>42.59</td>
     </tr>
     <tr>
-      <td>11</td>
+      <th>11</th>
       <td>16.73</td>
       <td>83.46</td>
       <td>44.00</td>
     </tr>
     <tr>
-      <td>12</td>
+      <th>12</th>
       <td>17.07</td>
       <td>85.81</td>
       <td>42.78</td>
     </tr>
     <tr>
-      <td>13</td>
+      <th>13</th>
       <td>17.60</td>
       <td>85.92</td>
       <td>43.11</td>
     </tr>
     <tr>
-      <td>14</td>
+      <th>14</th>
       <td>16.90</td>
       <td>84.23</td>
       <td>43.48</td>
@@ -587,7 +598,7 @@ univariate_control_chart(x, var=None, sigma=3, legend_right=False, interactive=F
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotelling_control_chart_example_8_0.png" src="_images/hotelling_control_chart_example_8_0.png" />
+<img alt="_images/hotelling_control_chart_example_9_0.png" src="_images/hotelling_control_chart_example_9_0.png" />
 </div>
 </div>
 <p>From the above chart, it looks like impurities might be out of control for sample id 1. Since we see this out of control at both the Hotelling control chart and univariate control chart, we will remove the first observation.</p>
@@ -601,11 +612,20 @@ univariate_control_chart(x, var=None, sigma=3, legend_right=False, interactive=F
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fe16480cc40&gt;
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotelling_control_chart_example_10_0.png" src="_images/hotelling_control_chart_example_10_0.png" />
+<img alt="_images/hotelling_control_chart_example_11_1.png" src="_images/hotelling_control_chart_example_11_1.png" />
 </div>
 </div>
 <p>This looks better, and now, sample 4 that was out of control is now in control (sample 3). We could save the mean vector and the covariance matrix for a phase 2 evaluation of new samples.</p>
@@ -678,19 +698,19 @@ dtype: float64
   </thead>
   <tbody>
     <tr>
-      <td>impurities</td>
+      <th>impurities</th>
       <td>0.067006</td>
       <td>0.076218</td>
       <td>-0.053878</td>
     </tr>
     <tr>
-      <td>temp</td>
+      <th>temp</th>
       <td>0.076218</td>
       <td>1.092777</td>
       <td>-0.215359</td>
     </tr>
     <tr>
-      <td>concentration</td>
+      <th>concentration</th>
       <td>-0.053878</td>
       <td>-0.215359</td>
       <td>0.162997</td>
@@ -709,23 +729,23 @@ dtype: float64
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;matplotlib.axes._subplots.AxesSubplot at 0x7fe1634be880&gt;
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/hotelling_control_chart_example_16_0.png" src="_images/hotelling_control_chart_example_16_0.png" />
+<img alt="_images/hotelling_control_chart_example_17_1.png" src="_images/hotelling_control_chart_example_17_1.png" />
 </div>
 </div>
 <p>By calibrating our phase 1 to exclude our “suspect” sample, the control chart is now even more sensitive to out of control values.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 </div>
 
 
@@ -750,7 +770,14 @@ dtype: float64
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Hotelling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Multivariate sample</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Hotelling control chart example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#Multivariate-sample">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html">Cumulative Sum of deviations control charts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Multivariate-sample">Multivariate sample</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Multivariate-control-chart-w/cusum">Multivariate control chart w/cusum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Univariate-control-charts-with-cusum">Univariate control charts with cusum</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling with plotly.html">Hotelling control charts with Plotly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hotelling with plotly.html#Multivariate-sample">Multivariate sample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
@@ -762,7 +789,7 @@ dtype: float64
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
-      <li>Next: <a href="modules.html" title="next chapter"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
+      <li>Next: <a href="hotelling cusum.html" title="next chapter">Cumulative Sum of deviations control charts</a></li>
   </ul></li>
 </ul>
 </div>
