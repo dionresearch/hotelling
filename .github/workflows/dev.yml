@@ -26,7 +26,7 @@ jobs:
 
       - shell: bash -l {0}
         run: |
-          conda install ipython click matplotlib pandas plotly scipy flake8 sphinx pandoc -y -q
+          conda install ipython nbconvert jupyter click matplotlib==3.2.2 pandas plotly scipy flake8 sphinx pandoc -y -q
           python -m pip install -r requirements_dev.txt
           python -m pip install .
 
@@ -54,14 +54,26 @@ jobs:
         run: |
             cd tests
             pytest --emoji -v --md ../docs/tests.md .
-            pytest --cov-report term --cov=mariner . > coverage.txt
+            pytest --cov-report term --cov=hotelling . > coverage.txt
 
       - uses: machine-learning-apps/pr-comment@master
         if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request' && matrix.python-version == '3.8'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          path: coverage.txt
+          path: tests/coverage.txt
+
+      - name: Install Hotelling kernelspec
+        shell: bash -l {0}
+        run: |
+          python -m ipykernel install --user --name Hotelling
+
+      - name: run notebooks
+        shell: bash -l {0}
+        run: |
+          jupyter nbconvert --to notebook --execute notebooks/hotelling\ control\ chart\ example.ipynb --output docs/hotelling\ control\ chart\ example.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling\ cusum.ipynb --output docs/hotelling\ cusum.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling\ with\ plotly.ipynb --output docs/hotelling\ with\ plotly.ipynb
 
       - name: API doc build
         shell: bash -l {0}

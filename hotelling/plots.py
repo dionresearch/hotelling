@@ -13,21 +13,22 @@ See:
     with Multiresponse Data. Biometrics 28, 81-124
 
 """
-import matplotlib.pyplot as plt
-from hotelling.stats import hotelling_t2
-
 from warnings import warn
 
+import matplotlib.pyplot as plt
 import pandas as pd
 
 try:
     from plotly.offline import iplot
     from plotly.subplots import make_subplots
     import plotly.tools as tls
+
     plotly_module = True
 except ModuleNotFoundError:
     plotly_module = False
 from scipy import stats
+
+from hotelling.stats import hotelling_t2
 
 
 def control_interval(m, n, f, phase=1, alpha=0.001):
@@ -95,10 +96,14 @@ def control_chart(
     legend_right=False,
     interactive=False,
     width=10,
+    cusum=False,
+    template="none",
+    marker="o",
+    ooc_marker="x",
 ):
     """control_chart.
 
-    Hotellilng Control Chart based on Q / T^2
+    Hotelling Control Chart based on Q / T^2
 
     :param x: pandas dataframe, uni or multivariate
     :param phase: 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control
@@ -108,7 +113,11 @@ def control_chart(
     :param legend_right: default to 'left', can specify 'right'
     :param interactive: if  True and plotly is available, renders as interactive plot in notebook. False, render image.
     :param width: how many units wide. defaults to 10, good for notebooks
-    :return: matplotlib ax
+    :param cusum: use cumulative sum instead of average
+    :param template: plotly template, defaults to 'none', matching default matplotlib
+    :param marker: default marker symbol - one valid for matplotlib
+    :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib
+    :return: matplotlib ax / plotly fig
     """
     n, f = x.shape
     m = n
@@ -120,18 +129,26 @@ def control_chart(
         warn("Error: must specify both x_bar and s, or none at all.")
         raise ValueError
 
-    qi = [hotelling_t2(x[i: i + 1], x_bar, S=s) for i in range(n)]
-    q = pd.Series(qi)
-    ax = q.plot(
-        title=f"Hotelling Control Chart (α={alpha}, phase={phase})",
-        marker="o",
+    qi = [hotelling_t2(x[i : i + 1], x_bar, S=s) for i in range(n)]
+    df = pd.DataFrame({"qi": qi})
+
+    lcl, cl, ucl = control_interval(m, n, f, phase=phase, alpha=alpha)
+
+    cusum_text = ""
+    if cusum:
+        df["deviation"] = (df["qi"] - cl).cumsum() + cl
+        cusum_text = f" w/deviation (ref={cl:.3f})"
+    ax = df.plot(
+        title=f"Hotelling Control Chart (α={alpha}, phase={phase}{cusum_text})",
+        marker=marker,
         figsize=(width, width / 2),
     )
     ax.set_xlabel("samples")
 
-    lcl, cl, ucl = control_interval(m, n, f, phase=phase, alpha=alpha)
     try:
-        q[(q > ucl) | (q < lcl)].plot(ax=ax, marker="o", linestyle="None")
+        df[(df["qi"] > ucl) | (df["qi"] < lcl)].plot(
+            ax=ax, marker=ooc_marker, linestyle="None", color="red", legend=None
+        )
     except TypeError:
         # nothing to plot
         pass
@@ -193,6 +210,7 @@ def control_chart(
                 y1=var,
                 line=dict(color=col, width=4, dash="dashdot",),
             )
+        fig.update_layout(template=template)
         iplot(fig)
     else:
         return ax
@@ -206,6 +224,11 @@ def univariate_control_chart(
     interactive=False,
     connected=True,
     width=10,
+    cusum=False,
+    cusum_only=False,
+    template="none",
+    marker="o",
+    ooc_marker="x",
 ):
     """univariate_control_chart.
 
@@ -214,13 +237,19 @@ def univariate_control_chart(
     :param sigma: default to 3 sigma from mean for upper and lower control lines
     :param legend_right: default to 'left', can specify 'right'
     :param interactive: if plotly is available, renders as interactive plot in notebook. False to render image.
-    :param connected: defaults to True. Appropriate when time related, else, should be False
+    :param connected: defaults to True. Appropriate when time related /consecutive batches, else, should be False
     :param width: how many units wide. defaults to 10, good for notebooks
+    :param cusum: use cumulative sum instead of average
+    :param cusum_only: don't display values, just cusum referenced to 0
+    :param template: plotly template, defaults to 'none', matching default matplotlib
+    :param marker: default marker symbol (o) - one valid for matplotlib
+    :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib
     :return: returns matplotlib figure
     """
     n, *f = x.shape
 
-    num_plots = len(x.columns)
+    df = x.copy()
+    num_plots = len(df.columns)
     k = sigma  # 3 sigma default
     if interactive:
         fig = make_subplots(rows=num_plots, cols=1)
@@ -229,7 +258,7 @@ def univariate_control_chart(
     ax = list(range(num_plots))
 
     layout = (num_plots) * 100 + 11
-    features = x.columns if var is None else [var]
+    features = df.columns if var is None else [var]
     x_pos = 0
     align = "left"
     if legend_right:
@@ -237,30 +266,48 @@ def univariate_control_chart(
         align = "right"
 
     for i, var in enumerate(features):
-        x_bar = x[var].mean()
-        ucl = x_bar + k * x[var].std()
-        lcl = x_bar - k * x[var].std()
+        x_bar = df[var].mean()
+        cusum_text = ""
+        columns = var
+        if cusum:
+            if cusum_only:
+                columns = "deviation"
+                df["deviation"] = (df[var] - x_bar).cumsum()
+                cusum_text = f" cumulative deviation (ref={x_bar:.3f})"
+            else:
+                columns = [var, "deviation"]
+                df["deviation"] = (df[var] - x_bar).cumsum() + (x_bar)
+                cusum_text = f" w/deviation (ref={x_bar:.3f})"
+        ucl = x_bar + k * df[var].std()
+        lcl = x_bar - k * df[var].std()
         if interactive:
             mpl_fig, ax[i] = plt.subplots(figsize=(width, width / 2))
         else:
             ax[i] = fig.add_subplot(layout + i)
         if connected:
-            x[var].plot(ax=ax[i], marker="o")
+            df[columns].plot(ax=ax[i], marker=marker)
         else:
-            x[var].plot(ax=ax[i], marker="o", linestyle="None")
+            df[columns].plot(ax=ax[i], marker=marker, linestyle="None")
         try:
-            x[var][(x[var] > ucl) | (x[var] < lcl)].plot(
-                ax=ax[i], marker="o", linestyle="None"
-            )
+            if cusum_only is False:
+                df[var][(x[var] > ucl) | (x[var] < lcl)].plot(
+                    ax=ax[i], marker=ooc_marker, linestyle="None", color="red"
+                )
         except TypeError:
             # no outliers
             pass
-        x_min = x.index.min()
-        x_max = x.index.max()
-        y_low = min(x[var].min(), lcl) - 0.1 * x[var].min()
-        y_high = max(x[var].max(), ucl) + 0.1 * x[var].max()
+        x_min = df.index.min()
+        x_max = df.index.max()
+        if cusum_only is False:
+            y_low = min(df[var].min(), lcl) - 0.1 * abs(df[var].min())
+            y_high = max(df[var].max(), ucl) + 0.1 * abs(df[var].max())
+        elif cusum:
+            y_low = min(df["deviation"].min() - 0.1 * abs(df["deviation"].min()), 0)
+            y_high = df["deviation"].max() + 0.1 * abs(df["deviation"].max())
+        else:
+            warn("Error: must specify cusum=True when using cusum_only=True.")
 
-        if plotly_module and interactive:
+        if plotly_module and interactive and cusum_only is False:
             ucl_text = dict(
                 x=x_pos,
                 y=ucl + 0.2,
@@ -288,7 +335,7 @@ def univariate_control_chart(
                 yref="y",
                 font=dict(family="serif", color="red", size=10),
             )
-        else:
+        elif cusum_only is False:
             ax[i].hlines(
                 ucl, xmin=x_min, xmax=x_max, linestyles="dashed", color="r", label="UCL"
             )
@@ -328,22 +375,32 @@ def univariate_control_chart(
                 fontdict=font_dict,
                 horizontalalignment=align,
             )
-        ax[i].title.set_text(f"Univariate Control Chart for {var} (σ={sigma})")
+
+        ax[i].title.set_text(
+            f"Univariate Control Chart for {var}{cusum_text} (σ={sigma})"
+        )
         plt.tight_layout()
         if plotly_module and interactive:
             pfig = tls.mpl_to_plotly(mpl_fig)
-            for var, col in [(ucl, "Red"), (lcl, "Red"), (x_bar, "Black")]:
-                pfig.add_shape(
-                    type="line",
-                    x0=x_min,
-                    y0=var,
-                    x1=x_max,
-                    y1=var,
-                    line=dict(color=col, width=4, dash="dashdot",),
-                )
+            if cusum_only is False:
+                for var, col in [(ucl, "Red"), (lcl, "Red"), (x_bar, "Black")]:
+                    pfig.add_shape(
+                        type="line",
+                        x0=x_min,
+                        y0=var,
+                        x1=x_max,
+                        y1=var,
+                        line=dict(color=col, width=4, dash="dashdot",),
+                    )
             pfig.update_xaxes(range=(x_min - 1, x_max + 1))
             pfig.update_yaxes(range=(y_low, y_high))
-            pfig.update_layout(margin=dict(l=1, r=1), annotations=[ucl_text, mean_text, lcl_text])  # noqa
+            annotations = None if cusum_only else [ucl_text, mean_text, lcl_text]
+            pfig.update_layout(
+                margin=dict(l=1, r=1),
+                yaxis_tickmode="auto",
+                annotations=annotations,
+                template=template,
+            )  # noqa
             iplot(pfig)
     if not interactive:
         return fig

@@ -9,6 +9,8 @@ Welcome to Hotelling T2's documentation!
    installation
    usage
    hotelling control chart example.ipynb
+   hotelling cusum.ipynb
+   hotelling with plotly.ipynb
    modules
    contributing
    authors
