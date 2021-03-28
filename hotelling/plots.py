@@ -129,7 +129,7 @@ def control_chart(
         warn("Error: must specify both x_bar and s, or none at all.")
         raise ValueError
 
-    qi = [hotelling_t2(x[i : i + 1], x_bar, S=s) for i in range(n)]
+    qi = [hotelling_t2(x[i: i + 1], x_bar, S=s) for i in range(n)]
     df = pd.DataFrame({"qi": qi})
 
     lcl, cl, ucl = control_interval(m, n, f, phase=phase, alpha=alpha)
@@ -395,12 +395,11 @@ def univariate_control_chart(
             pfig.update_xaxes(range=(x_min - 1, x_max + 1))
             pfig.update_yaxes(range=(y_low, y_high))
             annotations = None if cusum_only else [ucl_text, mean_text, lcl_text]
-            pfig.update_layout(
-                margin=dict(l=1, r=1),
+            pfig.update_layout(margin=dict(l=1, r=1),  # noqa
                 yaxis_tickmode="auto",
                 annotations=annotations,
                 template=template,
-            )  # noqa
+            )
             iplot(pfig)
     if not interactive:
         return fig
