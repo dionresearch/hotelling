@@ -1,6 +1,5 @@
 name: Hotelling dev steps w/Miniconda
 on:
-  push:
   pull_request:
 
 jobs:
