@@ -2,6 +2,12 @@
 History
 =======
 
+0.4.2 (2021-03-28)
+------------------
+* plotly template(s) can be passed as argument
+* added cusum and cusum options
+* set last working matplotlib w/plotly mpl compatibility
+
 0.4.1 (2021-03-20)
 ------------------
 * --chart option to cli
