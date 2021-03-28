@@ -87,3 +87,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: docs/_build/html
+
+      - name: Build sdist and bdist
+        shell: bash -l {0}
+        run: |
+          python setup.py sdist bdist_wheel
