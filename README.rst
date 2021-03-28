@@ -5,10 +5,6 @@ Hotelling
         :target: https://pypi.python.org/pypi/hotelling
 
 
-.. image:: https://readthedocs.org/projects/hotelling/badge/?version=latest
-        :target: https://hotelling.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
 Hotelling implements one and two sample Hotelling T^2 (T-squared) tests.
 It also implements Hotelling Control Charts (Multivariate) and multiple
 Univariate Control Charts
@@ -24,7 +20,7 @@ Univariate Control Charts
    Univariate Control Chart
 
 -  Free software: MIT license
--  Documentation: https://hotelling.readthedocs.io.
+-  Documentation: https://dionresearch.github.io/hotelling/
 
 Features
 --------
