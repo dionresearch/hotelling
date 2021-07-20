@@ -2,6 +2,12 @@
 History
 =======
 
+0.5.0 (2021-07-20)
+------------------
+* Dask support
+* Update to latest plotly / matplotlib
+* many new tests
+
 0.4.3 (2021-03-28)
 ------------------
 * plotly template(s) can be passed as argument
