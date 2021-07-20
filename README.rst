@@ -29,10 +29,14 @@ Features
    and p-value
 -  plots module covering Univariate Control Chart and Hotelling Control
    Chart
--  with the optional plotly module, provides interactive charts:
+-  with the optional `plotly` module, provides interactive charts:
 
 .. figure:: https://github.com/dionresearch/hotelling/raw/master/png/interactive.png
    :alt: Interactive Control Chart
+
+
+For this to work properly, you have to install `plotly` version 0.5 or greater. This is available from pypi, or through
+the plotly channel for conda: `conda install plotly -c plotly`
 
 Credits
 -------
