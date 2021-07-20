@@ -36,7 +36,7 @@ def control_interval(m, n, f, phase=1, alpha=0.001):
 
     For Hotelling control charts, phase 1 is using Qi. This follows a beta distribution, not an F distribution. For
     phase 2 uses future observations. These would follow a known distribution ~ F (Seber, 1984).
-    The lower and upper lines are based on the quantiles of the distribution (aka percent point function)
+    The lower and upper lines are based on the quantiles of the distribution (aka `percent point function`)
     for α and 1 - α, while the center line is the median (50%).
 
     See:
@@ -84,7 +84,10 @@ def control_stats(x):
     :param x: pandas dataframe, uni or multivariate
     :return: sample mean, sample covariance
     """
-    return x.mean(0), x.cov()
+    try:
+        return x.mean(0).compute(), x.cov().compute()
+    except AttributeError:
+        return x.mean(0), x.cov()
 
 
 def control_chart(
@@ -100,10 +103,14 @@ def control_chart(
     template="none",
     marker="o",
     ooc_marker="x",
+    random_state=42,
+    limit=1000,
 ):
     """control_chart.
 
-    Hotelling Control Chart based on Q / T^2
+    Hotelling Control Chart based on Q / T^2.
+
+    See also `control_interval` for more detail
 
     :param x: pandas dataframe, uni or multivariate
     :param phase: 1 or 2 - phase 1 is within initial sample, phase 2 is measuring implemented control
@@ -117,19 +124,23 @@ def control_chart(
     :param template: plotly template, defaults to 'none', matching default matplotlib
     :param marker: default marker symbol - one valid for matplotlib
     :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib
+    :param random_state: seed for sample (n > limit)
+    :param limit: max number of points to plot, defaults to 1000
     :return: matplotlib ax / plotly fig
     """
-    n, f = x.shape
+    n, subset = limit_display(x, limit, random_state)
     m = n
 
     # computing each individual values to the mean and covariance of the whole dataset
     if x_bar is None and s is None:
         x_bar, s = control_stats(x)
     elif x_bar is None or s is None:
-        warn("Error: must specify both x_bar and s, or none at all.")
-        raise ValueError
+        raise ValueError("Error: must specify both x_bar and s, or none at all.")
 
-    qi = [hotelling_t2(x[i: i + 1], x_bar, S=s) for i in range(n)]
+    # data might be a subset (sample), but control stats above are calculated on the whole dataset
+    points, f = subset.shape
+    qi = [hotelling_t2(subset[i:i + 1], x_bar, S=s) for i in range(points)]
+
     df = pd.DataFrame({"qi": qi})
 
     lcl, cl, ucl = control_interval(m, n, f, phase=phase, alpha=alpha)
@@ -212,8 +223,43 @@ def control_chart(
             )
         fig.update_layout(template=template)
         iplot(fig)
+        return fig
     else:
         return ax
+
+
+def limit_display(x, limit, random_state):
+    """limit_displau.
+
+    Convenient way to get around the issue of very large datasets. We can't show everything, so we display
+    a subset. The tests and stats like T2, F and P values are not affected, because we calculate them on all
+    the data.
+
+    :param x: dask or pandas dataframe, uni or multivariate
+    :param random_state: seed for sample (n > limit)
+    :param limit: max number of points to plot, defaults to 1000
+    :return: returns original number of rows and limited dataframe
+    """
+    n, *f = x.shape
+
+    try:
+        n = n.compute()
+    except AttributeError:
+        pass
+    if n > limit:
+        try:
+            frac = 1000 / n
+            subset = x.sample(frac=frac, random_state=random_state).compute()
+        except AttributeError:
+            subset = x.sample(n=1000, random_state=random_state)
+    else:
+        # The whole thing
+        try:
+            subset = x.compute()
+        except AttributeError:
+            subset = x
+
+    return n, subset
 
 
 def univariate_control_chart(
@@ -229,10 +275,12 @@ def univariate_control_chart(
     template="none",
     marker="o",
     ooc_marker="x",
+    limit=1000,
+    random_state=42,
 ):
     """univariate_control_chart.
 
-    :param x: pandas dataframe, uni or multivariate
+    :param x: dask or pandas dataframe, uni or multivariate
     :param var: optional, variable to plot (default to all)
     :param sigma: default to 3 sigma from mean for upper and lower control lines
     :param legend_right: default to 'left', can specify 'right'
@@ -244,20 +292,20 @@ def univariate_control_chart(
     :param template: plotly template, defaults to 'none', matching default matplotlib
     :param marker: default marker symbol (o) - one valid for matplotlib
     :param ooc_marker: out of control marker symbol (x) - one valid for matplotlib
-    :return: returns matplotlib figure
+    :param random_state: seed for sample (n > limit)
+    :param limit: max number of points to plot, defaults to 1000
+    :return: returns matplotlib figure or array of plotly figures
     """
-    n, *f = x.shape
-
-    df = x.copy()
+    n, *f, df = limit_display(x, limit, random_state)
     num_plots = len(df.columns)
     k = sigma  # 3 sigma default
     if interactive:
         fig = make_subplots(rows=num_plots, cols=1)
     else:
-        fig = plt.figure(figsize=(width, (num_plots) * width / 2))
+        fig = plt.figure(figsize=(width, num_plots * width / 2))
     ax = list(range(num_plots))
 
-    layout = (num_plots) * 100 + 11
+    layout = num_plots * 100 + 11
     features = df.columns if var is None else [var]
     x_pos = 0
     align = "left"
@@ -265,6 +313,7 @@ def univariate_control_chart(
         x_pos = n
         align = "right"
 
+    plotly_figs = []
     for i, var in enumerate(features):
         x_bar = df[var].mean()
         cusum_text = ""
@@ -401,5 +450,8 @@ def univariate_control_chart(
                 template=template,
             )
             iplot(pfig)
-    if not interactive:
+            plotly_figs.append(pfig)
+    if interactive:
+        return plotly_figs
+    else:
         return fig

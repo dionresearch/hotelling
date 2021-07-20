@@ -15,7 +15,7 @@ import numpy as np
 from scipy.stats import f
 
 
-def bessel_correction(x, y):
+def bessel_correction(x, y=None):
     """bessel_correction.
 
     Sampling tends to underestimate variability of a population. This is due to the fact that we are more likely to
@@ -23,14 +23,22 @@ def bessel_correction(x, y):
     calculate variance etc, in order to correct for the bias in the estimation of the population variance.
 
     :param x: array-like, samples of observations
-    :param y: array-like, samples of observations
+    :param y: array-like, samples of observations, optional
     :return: returns x_n - 1, y_n - 1
     """
     n1 = x.shape[0] - 1
+    try:
+        n1 = n1.compute()
+    except AttributeError:
+        pass
     if y is None:
         n2 = 0
     else:
         n2 = y.shape[0] - 1
+        try:
+            n2 = n2.compute()
+        except AttributeError:
+            pass
     return n1, n2
 
 
@@ -45,7 +53,11 @@ def inverse_covariance_matrix(x, y, bessel=True):
     _, *p = x.shape
     p = p[0] if p else 1
     s = pooled_covariance_matrix(x, y, bessel)
-    inv = np.linalg.solve(s, np.identity(p))
+    try:
+        ident_p = np.identity(p).compute
+    except AttributeError:
+        ident_p = np.identity(p)
+    inv = np.linalg.solve(s, ident_p)
     return inv, s
 
 
@@ -75,20 +87,24 @@ def pooled_covariance_matrix(x, y, bessel=True):
     :param bessel: bool, apply bessel correction (default)
     :return: float, the pooled variance
     """
-    _, *p = x.shape
-    p = p[0] if p else 1
-
     if bessel:
         n1, n2 = bessel_correction(x, y)
     else:
-        n1 = x.shape[0]
-        n2 = y.shape[0]
+        try:
+            n1 = x.shape[0]
+            n1 = n1.compute()
+            n2 = y.shape[0]
+            n2 = n2.compute()
+        except AttributeError:
+            n1 = x.shape[0]
+            n2 = y.shape[0]
     try:
-        s1 = n1 * x.cov()
+        s1 = n1 * x.cov().compute()
+
     except AttributeError:
         s1 = n1 * np.cov(x, rowvar=False)
     try:
-        s2 = n2 * y.cov()
+        s2 = n2 * y.cov().compute()
     except AttributeError:
         s2 = n2 * np.cov(y, rowvar=False)
     s = (s1 + s2) / (n1 + n2)
@@ -158,7 +174,11 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
             raise ValueError
 
     # samples observed means
-    x_bar = x.mean(0)
+    try:
+        nx = nx.compute()
+        x_bar = x.mean(0).compute()
+    except AttributeError:  # series has no attribute compute
+        x_bar = x.mean(0)
 
     one_sample = False
     if y is None:
@@ -178,7 +198,11 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
         else:
             # Two sample T-squared
             py = py[0] if py else 1
-            y_bar = y.mean(0)
+            try:
+                ny = ny.compute()
+                y_bar = y.mean(0).compute()
+            except AttributeError:  # series has no attribute compute
+                y_bar = y.mean(0)
             # difference of means
             diff_bar = x_bar - y_bar
     if p != py:
@@ -206,10 +230,15 @@ def hotelling_t2(x, y=None, bessel=True, S=None):
             cov = S
         else:
             try:
-                cov = x.cov()
+                cov = x.cov().compute()
             except AttributeError:
-                cov = np.cov(x, rowvar=False)
+                try:
+                    cov = x.cov()
+                except AttributeError:
+                    cov = np.cov(x, rowvar=False)
         inv_cov = np.linalg.pinv(cov)
+        # for f test
+        # term = (n - p) / (p * (n - 1))  # getting different results
         t2_stat = n * (diff_bar.T @ inv_cov @ diff_bar)
         if S is not None:
             return t2_stat
