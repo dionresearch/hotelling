@@ -29,7 +29,7 @@ try:
 
     def test_plotly_no_dask():
         x = load_df('data/swiss_real.csv')
-        fig = control_chart(x, alpha=0.01, legend_right=True, interactive=True)
+        fig = control_chart(x, alpha=0.01, legend_right=True, interactive=True, no_display=True)
         fig.write_html('plotly/test_no_dask.html')
 
 except ModuleNotFoundError:

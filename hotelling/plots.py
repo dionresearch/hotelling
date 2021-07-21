@@ -105,6 +105,7 @@ def control_chart(
     ooc_marker="x",
     random_state=42,
     limit=1000,
+    no_display=False,
 ):
     """control_chart.
 
@@ -222,7 +223,8 @@ def control_chart(
                 line=dict(color=col, width=4, dash="dashdot",),
             )
         fig.update_layout(template=template)
-        iplot(fig)
+        if no_display is False:
+            iplot(fig)
         return fig
     else:
         return ax
@@ -277,6 +279,7 @@ def univariate_control_chart(
     ooc_marker="x",
     limit=1000,
     random_state=42,
+    no_display=False,
 ):
     """univariate_control_chart.
 
@@ -303,6 +306,7 @@ def univariate_control_chart(
         fig = make_subplots(rows=num_plots, cols=1)
     else:
         fig = plt.figure(figsize=(width, num_plots * width / 2))
+
     ax = list(range(num_plots))
 
     layout = num_plots * 100 + 11
@@ -449,7 +453,8 @@ def univariate_control_chart(
                 annotations=annotations,
                 template=template,
             )
-            iplot(pfig)
+            if no_display is False:
+                iplot(pfig)
             plotly_figs.append(pfig)
     if interactive:
         return plotly_figs
