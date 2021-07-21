@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>History &#8212; Hotelling T2 0.4.3 documentation</title>
+    <title>History &#8212; Hotelling T2 0.5.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -19,6 +19,7 @@
     <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Test Report" href="tests.html" />
     <link rel="prev" title="Credits" href="authors.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -39,15 +40,23 @@
   <div class="section" id="history">
 <h1>History<a class="headerlink" href="#history" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="id1">
-<h2>0.4.3 (2021-03-28)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<h2>0.5.0 (2021-07-20)<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Dask support</li>
+<li>Update to latest plotly / matplotlib</li>
+<li>many new tests</li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h2>0.4.3 (2021-03-28)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>plotly template(s) can be passed as argument</li>
 <li>added cusum and cusum options</li>
 <li>set last working matplotlib w/plotly mpl compatibility</li>
 </ul>
 </div>
-<div class="section" id="id2">
-<h2>0.4.1 (2021-03-20)<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id3">
+<h2>0.4.1 (2021-03-20)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>–chart option to cli</li>
 <li>–output &lt;filename} or ‘stdout’  option to cli</li>
@@ -56,8 +65,8 @@
 <li>flake8 cleanup, automation</li>
 </ul>
 </div>
-<div class="section" id="id3">
-<h2>0.4.0 (2020-07-26)<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id4">
+<h2>0.4.0 (2020-07-26)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>matplotlib as requirement</li>
 <li>now with optional plotly support</li>
@@ -65,20 +74,20 @@
 <li>bugfix, handling no outliers</li>
 </ul>
 </div>
-<div class="section" id="id4">
-<h2>0.3.0 (2020-06-04)<a class="headerlink" href="#id4" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id5">
+<h2>0.3.0 (2020-06-04)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>added multi and univariate control charts</li>
 </ul>
 </div>
-<div class="section" id="id5">
-<h2>0.2.0 (2020-06-02)<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id6">
+<h2>0.2.0 (2020-06-02)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>Added one sample T-squared test</li>
 </ul>
 </div>
-<div class="section" id="id6">
-<h2>0.1.0 (2019-10-27)<a class="headerlink" href="#id6" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="id7">
+<h2>0.1.0 (2019-10-27)<a class="headerlink" href="#id7" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>First release</li>
 </ul>
@@ -105,28 +114,23 @@
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Hotelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#coverage">Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling control chart example.html">Hotelling control chart example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling control chart example.html#Multivariate-sample">Multivariate sample</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html">Cumulative Sum of deviations control charts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Multivariate-sample">Multivariate sample</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Multivariate-control-chart-w/cusum">Multivariate control chart w/cusum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Univariate-control-charts-with-cusum">Univariate control charts with cusum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling with plotly.html">Hotelling control charts with Plotly</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling with plotly.html#Multivariate-sample">Multivariate sample</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">History</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#id1">0.4.3 (2021-03-28)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id2">0.4.1 (2021-03-20)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id3">0.4.0 (2020-07-26)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id4">0.3.0 (2020-06-04)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id5">0.2.0 (2020-06-02)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#id6">0.1.0 (2019-10-27)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id1">0.5.0 (2021-07-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id2">0.4.3 (2021-03-28)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id3">0.4.1 (2021-03-20)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id4">0.4.0 (2020-07-26)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id5">0.3.0 (2020-06-04)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id6">0.2.0 (2020-06-02)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#id7">0.1.0 (2019-10-27)</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Test Report</a></li>
 </ul>
 
 <div class="relations">
@@ -134,6 +138,7 @@
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="authors.html" title="previous chapter">Credits</a></li>
+      <li>Next: <a href="tests.html" title="next chapter">Test Report</a></li>
   </ul></li>
 </ul>
 </div>

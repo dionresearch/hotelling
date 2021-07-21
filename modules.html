@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>hotelling &#8212; Hotelling T2 0.4.3 documentation</title>
+    <title>hotelling &#8212; Hotelling T2 0.5.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Contributing" href="contributing.html" />
-    <link rel="prev" title="Hotelling control charts with Plotly" href="hotelling with plotly.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -58,7 +58,7 @@
 <p><a class="reference external" href="https://projecteuclid.org/euclid.aoms/1177732979">https://projecteuclid.org/euclid.aoms/1177732979</a></p>
 <dl class="function">
 <dt id="hotelling.stats.bessel_correction">
-<code class="descclassname">hotelling.stats.</code><code class="descname">bessel_correction</code><span class="sig-paren">(</span><em>x</em>, <em>y</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#bessel_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.bessel_correction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">hotelling.stats.</code><code class="descname">bessel_correction</code><span class="sig-paren">(</span><em>x</em>, <em>y=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/stats.html#bessel_correction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.stats.bessel_correction" title="Permalink to this definition">¶</a></dt>
 <dd><p>bessel_correction.</p>
 <p>Sampling tends to underestimate variability of a population. This is due to the fact that we are more likely to
 sample around the mean than near the extremities. Bessel’s correction uses n−1 instead of n which is used to
@@ -69,7 +69,7 @@ calculate variance etc, in order to correct for the bias in the estimation of th
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> – array-like, samples of observations</li>
-<li><strong>y</strong> – array-like, samples of observations</li>
+<li><strong>y</strong> – array-like, samples of observations, optional</li>
 </ul>
 </td>
 </tr>
@@ -236,9 +236,10 @@ with Multiresponse Data. Biometrics 28, 81-124</li>
 </div></blockquote>
 <dl class="function">
 <dt id="hotelling.plots.control_chart">
-<code class="descclassname">hotelling.plots.</code><code class="descname">control_chart</code><span class="sig-paren">(</span><em>x</em>, <em>phase=1</em>, <em>alpha=0.001</em>, <em>x_bar=None</em>, <em>s=None</em>, <em>legend_right=False</em>, <em>interactive=False</em>, <em>width=10</em>, <em>cusum=False</em>, <em>template='none'</em>, <em>marker='o'</em>, <em>ooc_marker='x'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#control_chart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.control_chart" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">hotelling.plots.</code><code class="descname">control_chart</code><span class="sig-paren">(</span><em>x</em>, <em>phase=1</em>, <em>alpha=0.001</em>, <em>x_bar=None</em>, <em>s=None</em>, <em>legend_right=False</em>, <em>interactive=False</em>, <em>width=10</em>, <em>cusum=False</em>, <em>template='none'</em>, <em>marker='o'</em>, <em>ooc_marker='x'</em>, <em>random_state=42</em>, <em>limit=1000</em>, <em>no_display=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#control_chart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.control_chart" title="Permalink to this definition">¶</a></dt>
 <dd><p>control_chart.</p>
-<p>Hotelling Control Chart based on Q / T^2</p>
+<p>Hotelling Control Chart based on Q / T^2.</p>
+<p>See also <cite>control_interval</cite> for more detail</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -256,6 +257,8 @@ with Multiresponse Data. Biometrics 28, 81-124</li>
 <li><strong>template</strong> – plotly template, defaults to ‘none’, matching default matplotlib</li>
 <li><strong>marker</strong> – default marker symbol - one valid for matplotlib</li>
 <li><strong>ooc_marker</strong> – out of control marker symbol (x) - one valid for matplotlib</li>
+<li><strong>random_state</strong> – seed for sample (n &gt; limit)</li>
+<li><strong>limit</strong> – max number of points to plot, defaults to 1000</li>
 </ul>
 </td>
 </tr>
@@ -272,7 +275,7 @@ with Multiresponse Data. Biometrics 28, 81-124</li>
 <dd><p>control_interval.</p>
 <p>For Hotelling control charts, phase 1 is using Qi. This follows a beta distribution, not an F distribution. For
 phase 2 uses future observations. These would follow a known distribution ~ F (Seber, 1984).
-The lower and upper lines are based on the quantiles of the distribution (aka percent point function)
+The lower and upper lines are based on the quantiles of the distribution (aka <cite>percent point function</cite>)
 for α and 1 - α, while the center line is the median (50%).</p>
 <dl class="docutils">
 <dt>See:</dt>
@@ -321,15 +324,40 @@ Journal or Quality Technology, 24:2, 88-95, DOI:10.1080/00224065.1992.12015232</
 </dd></dl>
 
 <dl class="function">
+<dt id="hotelling.plots.limit_display">
+<code class="descclassname">hotelling.plots.</code><code class="descname">limit_display</code><span class="sig-paren">(</span><em>x</em>, <em>limit</em>, <em>random_state</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#limit_display"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.limit_display" title="Permalink to this definition">¶</a></dt>
+<dd><p>limit_displau.</p>
+<p>Convenient way to get around the issue of very large datasets. We can’t show everything, so we display
+a subset. The tests and stats like T2, F and P values are not affected, because we calculate them on all
+the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>x</strong> – dask or pandas dataframe, uni or multivariate</li>
+<li><strong>random_state</strong> – seed for sample (n &gt; limit)</li>
+<li><strong>limit</strong> – max number of points to plot, defaults to 1000</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">returns original number of rows and limited dataframe</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="hotelling.plots.univariate_control_chart">
-<code class="descclassname">hotelling.plots.</code><code class="descname">univariate_control_chart</code><span class="sig-paren">(</span><em>x</em>, <em>var=None</em>, <em>sigma=3</em>, <em>legend_right=False</em>, <em>interactive=False</em>, <em>connected=True</em>, <em>width=10</em>, <em>cusum=False</em>, <em>cusum_only=False</em>, <em>template='none'</em>, <em>marker='o'</em>, <em>ooc_marker='x'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#univariate_control_chart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.univariate_control_chart" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">hotelling.plots.</code><code class="descname">univariate_control_chart</code><span class="sig-paren">(</span><em>x</em>, <em>var=None</em>, <em>sigma=3</em>, <em>legend_right=False</em>, <em>interactive=False</em>, <em>connected=True</em>, <em>width=10</em>, <em>cusum=False</em>, <em>cusum_only=False</em>, <em>template='none'</em>, <em>marker='o'</em>, <em>ooc_marker='x'</em>, <em>limit=1000</em>, <em>random_state=42</em>, <em>no_display=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/plots.html#univariate_control_chart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.plots.univariate_control_chart" title="Permalink to this definition">¶</a></dt>
 <dd><p>univariate_control_chart.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>x</strong> – pandas dataframe, uni or multivariate</li>
+<li><strong>x</strong> – dask or pandas dataframe, uni or multivariate</li>
 <li><strong>var</strong> – optional, variable to plot (default to all)</li>
 <li><strong>sigma</strong> – default to 3 sigma from mean for upper and lower control lines</li>
 <li><strong>legend_right</strong> – default to ‘left’, can specify ‘right’</li>
@@ -341,10 +369,12 @@ Journal or Quality Technology, 24:2, 88-95, DOI:10.1080/00224065.1992.12015232</
 <li><strong>template</strong> – plotly template, defaults to ‘none’, matching default matplotlib</li>
 <li><strong>marker</strong> – default marker symbol (o) - one valid for matplotlib</li>
 <li><strong>ooc_marker</strong> – out of control marker symbol (x) - one valid for matplotlib</li>
+<li><strong>random_state</strong> – seed for sample (n &gt; limit)</li>
+<li><strong>limit</strong> – max number of points to plot, defaults to 1000</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">returns matplotlib figure</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">returns matplotlib figure or array of plotly figures</p>
 </td>
 </tr>
 </tbody>
@@ -360,13 +390,36 @@ Journal or Quality Technology, 24:2, 88-95, DOI:10.1080/00224065.1992.12015232</
 <span id="hotelling-helpers"></span><h2><a class="reference internal" href="#module-hotelling.helpers" title="hotelling.helpers"><code class="xref py py-mod docutils literal notranslate"><span class="pre">hotelling.helpers</span></code></a><a class="headerlink" href="#module-hotelling.helpers" title="Permalink to this headline">¶</a></h2>
 <p>helpers.py.</p>
 <dl class="function">
+<dt id="hotelling.helpers.load_df">
+<code class="descclassname">hotelling.helpers.</code><code class="descname">load_df</code><span class="sig-paren">(</span><em>filepath</em>, <em>server=None</em>, <em>dask=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/helpers.html#load_df"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.helpers.load_df" title="Permalink to this definition">¶</a></dt>
+<dd><p>load_df.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>filepath</strong> (<em>str</em>) – </li>
+<li><strong>server</strong> (<em>str</em>) – head node for distributed cluster, ip address and port or hostname and port (localhost for local)</li>
+<li><strong>dask</strong> (<em>bool</em>) – if True, forces the use of dask,, even on smaller datasets</li>
+<li><strong>kwargs</strong> – to pass arguments to pandas <cite>read_csv</cite></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">dataframe</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="hotelling.helpers.savefig">
 <code class="descclassname">hotelling.helpers.</code><code class="descname">savefig</code><span class="sig-paren">(</span><em>plt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/hotelling/helpers.html#savefig"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#hotelling.helpers.savefig" title="Permalink to this definition">¶</a></dt>
 <dd><p>savefig.</p>
 <p>Allows displaying a matplotlib figure to the console terminal. This requires <cite>pysixel</cite> to be pip installed.
 It also requires a terminal with <cite>Sixel graphic</cite> support, like <cite>DEC</cite> with graphic support, Linux <cite>xterm</cite> (started
 with -ti 340), MLTerm (multilingual terminal, available on Windows, Linux etc).</p>
-<p>This is called by the command line stem tool when using -o stdout and can also be used in an ipython session.</p>
+<p>This is called by the command line tool when using –output stdout and can also be used in an ipython session.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -402,16 +455,9 @@ with -ti 340), MLTerm (multilingual terminal, available on Windows, Linux etc).<
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">Hotelling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html#coverage">Coverage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling control chart example.html">Hotelling control chart example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling control chart example.html#Multivariate-sample">Multivariate sample</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html">Cumulative Sum of deviations control charts</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Multivariate-sample">Multivariate sample</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Multivariate-control-chart-w/cusum">Multivariate control chart w/cusum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling cusum.html#Univariate-control-charts-with-cusum">Univariate control charts with cusum</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling with plotly.html">Hotelling control charts with Plotly</a></li>
-<li class="toctree-l1"><a class="reference internal" href="hotelling with plotly.html#Multivariate-sample">Multivariate sample</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">hotelling</span></code></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-hotelling.stats"><code class="docutils literal notranslate"><span class="pre">hotelling.stats</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-hotelling.plots"><code class="docutils literal notranslate"><span class="pre">hotelling.plots</span></code></a></li>
@@ -422,13 +468,14 @@ with -ti 340), MLTerm (multilingual terminal, available on Windows, Linux etc).<
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tests.html">Test Report</a></li>
 </ul>
 
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="hotelling with plotly.html" title="previous chapter">Hotelling control charts with Plotly</a></li>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
       <li>Next: <a href="contributing.html" title="next chapter">Contributing</a></li>
   </ul></li>
 </ul>
