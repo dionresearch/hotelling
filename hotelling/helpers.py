@@ -52,7 +52,7 @@ def load_df(filepath, server=None, dask=None, **kwargs):
             large = True
         else:
             large = dask
-    except FileNotFoundError:
+    except (OSError, FileNotFoundError):
         # doesn't exist, or is distributed.
         filesize = 0
         large = True

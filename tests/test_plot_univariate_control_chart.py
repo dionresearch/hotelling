@@ -1,3 +1,6 @@
+import matplotlib
+matplotlib.rcParams["backend"] = "Agg"
+
 import pytest
 from hotelling.helpers import load_df
 from hotelling.plots import univariate_control_chart
@@ -28,7 +31,7 @@ try:
 
     def test_univariate_plotly_no_dask():
         x = load_df('data/swiss_real.csv')
-        figs = univariate_control_chart(x, legend_right=True, interactive=True)
+        figs = univariate_control_chart(x, legend_right=True, interactive=True, no_display=True)
         for i, fig in enumerate(figs):
             fig.write_html(f'plotly/test_univariate{i}_no_dask.html')
 
@@ -42,14 +45,14 @@ except ModuleNotFoundError:
 
 def test_matplotlib_univariate_no_dask():
     x = load_df('data/swiss_real.csv')
-    ax = univariate_control_chart(x, legend_right=True)
-    ax.get_figure().savefig('../svg/mpl_test_univariate_no_dask.svg')
+    fig = univariate_control_chart(x, legend_right=True)
+    fig.savefig('../svg/mpl_test_univariate_no_dask.svg')
 
 
 def test_matplotlib_univariate_dask():
     x = load_df('data/swiss_real.csv', dask=True)
-    ax = univariate_control_chart(x, legend_right=True)
-    ax.get_figure().savefig('../svg/mpl_test_univariate_dask.svg')
+    fig = univariate_control_chart(x, legend_right=True)
+    fig.savefig('../svg/mpl_test_univariate_dask.svg')
 
 
 def test_matplotlib_univariate_identical():
@@ -62,14 +65,14 @@ def test_matplotlib_univariate_identical():
 
 def test_matplotlib_univariate_cusum_no_dask():
     x = load_df('data/swiss_real.csv')
-    ax = univariate_control_chart(x, cusum=True, legend_right=True)
-    ax.get_figure().savefig('../svg/mpl_test_univariate_cusum_no_dask.svg')
+    fig = univariate_control_chart(x, cusum=True, legend_right=True)
+    fig.savefig('../svg/mpl_test_univariate_cusum_no_dask.svg')
 
 
 def test_matplotlib_univariate_cusum_dask():
     x = load_df('data/swiss_real.csv', dask=True)
-    ax = univariate_control_chart(x, cusum=True, legend_right=True)
-    ax.get_figure().savefig('../svg/mpl_test_univariate_cusum_dask.svg')
+    fig = univariate_control_chart(x, cusum=True, legend_right=True)
+    fig.savefig('../svg/mpl_test_univariate_cusum_dask.svg')
 
 
 def test_matplotlib_univariate_cusum_identical():
@@ -82,14 +85,14 @@ def test_matplotlib_univariate_cusum_identical():
 
 def test_matplotlib_univariate_cusum_only_no_dask():
     x = load_df('data/swiss_real.csv')
-    ax = univariate_control_chart(x, cusum=True, cusum_only=True, legend_right=True)
-    ax.get_figure().savefig('../svg/mpl_test_univariate_cusum_only_no_dask.svg')
+    fig = univariate_control_chart(x, cusum=True, cusum_only=True, legend_right=True)
+    fig.savefig('../svg/mpl_test_univariate_cusum_only_no_dask.svg')
 
 
 def test_matplotlib_univariate_cusum_only_dask():
     x = load_df('data/swiss_real.csv', dask=True)
-    ax = univariate_control_chart(x, cusum=True, cusum_only=True, legend_right=True)
-    ax.get_figure().savefig('../svg/mpl_test_univariate_cusum_only_dask.svg')
+    fig = univariate_control_chart(x, cusum=True, cusum_only=True, legend_right=True)
+    fig.savefig('../svg/mpl_test_univariate_cusum_only_dask.svg')
 
 
 def test_matplotlib_univariate_cusum_only_identical():
