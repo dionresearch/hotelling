@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/fdion/hotelling
+    $ git clone git://github.com/dionresearch/hotelling
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/fdion/hotelling/tarball/master
+    $ curl -OJL https://github.com/dionresearch/hotelling/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/fdion/hotelling
-.. _tarball: https://github.com/fdion/hotelling/tarball/master
+.. _Github repo: https://github.com/dionresearch/hotelling
+.. _tarball: https://github.com/dionresearch/hotelling/tarball/master

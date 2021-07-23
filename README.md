@@ -20,7 +20,7 @@ Features
 
 -   Stats module covering hotelling t^2 (t-squared) statistics, f-value and p-value
 -   plots module covering Univariate Control Chart and Hotelling Control Chart
--   with the optional `dask` (and `distributed`) module, can handle very large datasets efficiently
+-   with the optional `dask` (and `distributed`) module, can handle large datasets efficiently
 -   with the optional `plotly` module, provides interactive charts:
 
   ![image](https://github.com/dionresearch/hotelling/raw/master/png/interactive.png)
