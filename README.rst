@@ -29,6 +29,8 @@ Features
    and p-value
 -  plots module covering Univariate Control Chart and Hotelling Control
    Chart
+-  with the optional `dask` (and `distributed`) module, can handle very
+   large datasets efficiently
 -  with the optional `plotly` module, provides interactive charts:
 
 .. figure:: https://github.com/dionresearch/hotelling/raw/master/png/interactive.png
