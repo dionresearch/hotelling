@@ -2,12 +2,12 @@
 Test Report
 ===========
 
-*Report generated on 24-Jul-2021 at 13:20:53 by `pytest-md <https://github.com/hackebrot/pytest-md>`_\ * 📝
+*Report generated on 24-Jul-2021 at 13:30:46 by `pytest-md <https://github.com/hackebrot/pytest-md>`_\ * 📝
 
 Summary
 -------
 
-36 tests ran in 15.40 seconds ⏱
+36 tests ran in 11.46 seconds ⏱
 
 
 * 36 passed 😃
@@ -53,29 +53,29 @@ tests/test_one_sample_dask.py
 
 ``test_hotelling_test_dat_one_sample_no_mu_no_dask`` 0.00s ⏱
 
-``test_hotelling_test_csv_one_sample_dask`` 0.07s ⏱
+``test_hotelling_test_csv_one_sample_dask`` 0.05s ⏱
 
-``test_hotelling_test_dat_one_sample_dask`` 0.04s ⏱
+``test_hotelling_test_dat_one_sample_dask`` 0.03s ⏱
 
 tests/test_one_sample_server.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_hotelling_test_csv_one_sample_server`` 1.83s ⏱
+``test_hotelling_test_csv_one_sample_server`` 1.46s ⏱
 
 tests/test_plot_control_chart.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_plotly_no_dask`` 0.54s ⏱
+``test_plotly_no_dask`` 0.40s ⏱
 
-``test_matplotlib_no_dask`` 0.24s ⏱
+``test_matplotlib_no_dask`` 0.19s ⏱
 
-``test_matplotlib_dask`` 0.38s ⏱
+``test_matplotlib_dask`` 0.30s ⏱
 
 ``test_matplotlib_identical`` 0.00s ⏱
 
-``test_matplotlib_cusum_no_dask`` 0.24s ⏱
+``test_matplotlib_cusum_no_dask`` 0.19s ⏱
 
-``test_matplotlib_cusum_dask`` 0.38s ⏱
+``test_matplotlib_cusum_dask`` 0.30s ⏱
 
 ``test_matplotlib_cusum_identical`` 0.00s ⏱
 
@@ -84,29 +84,29 @@ tests/test_plot_control_chart.py
 tests/test_plot_univariate_control_chart.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_univariate_plotly_no_dask`` 1.27s ⏱
+``test_univariate_plotly_no_dask`` 1.03s ⏱
 
-``test_matplotlib_univariate_no_dask`` 1.00s ⏱
+``test_matplotlib_univariate_no_dask`` 0.79s ⏱
 
-``test_matplotlib_univariate_dask`` 1.33s ⏱
+``test_matplotlib_univariate_dask`` 1.13s ⏱
 
 ``test_matplotlib_univariate_identical`` 0.01s ⏱
 
-``test_matplotlib_univariate_cusum_no_dask`` 1.30s ⏱
+``test_matplotlib_univariate_cusum_no_dask`` 1.08s ⏱
 
-``test_matplotlib_univariate_cusum_dask`` 1.58s ⏱
+``test_matplotlib_univariate_cusum_dask`` 1.27s ⏱
 
 ``test_matplotlib_univariate_cusum_identical`` 0.01s ⏱
 
-``test_matplotlib_univariate_cusum_only_no_dask`` 0.72s ⏱
+``test_matplotlib_univariate_cusum_only_no_dask`` 0.58s ⏱
 
-``test_matplotlib_univariate_cusum_only_dask`` 0.76s ⏱
+``test_matplotlib_univariate_cusum_only_dask`` 0.63s ⏱
 
 ``test_matplotlib_univariate_cusum_only_identical`` 0.01s ⏱
 
 tests/test_two_samples_dask.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_hotelling_test_csv_two_sample_no_dask`` 0.01s ⏱
+``test_hotelling_test_csv_two_sample_no_dask`` 0.00s ⏱
 
-``test_hotelling_test_csv_two_sample_dask`` 0.40s ⏱
+``test_hotelling_test_csv_two_sample_dask`` 0.38s ⏱
