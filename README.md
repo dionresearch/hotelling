@@ -14,7 +14,6 @@ Status
 
 About
 -----
-
 Hotelling implements one and two sample Hotelling T\^2 (T-squared) tests.
 It also implements Hotelling Control Charts (Multivariate) and multiple
 Univariate Control Charts
