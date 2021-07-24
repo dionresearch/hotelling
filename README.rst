@@ -3,8 +3,15 @@ Hotelling
 
 .. image:: https://github.com/dionresearch/hotelling/raw/master/png/hotelling_logo.png
 
+Status
+------
+.. image:: https://img.shields.io/badge/Made%20with-Python-1f425f.svg
+        :target: https://www.python.org/
 .. image:: https://img.shields.io/pypi/v/hotelling.svg
         :target: https://pypi.python.org/pypi/hotelling
+.. image:: https://github.com/dionresearch/hotelling/actions/workflows/dev.yml/badge.svg
+.. image:: https://github.com/dionresearch/hotelling/actions/workflows/release.yml/badge.svg
+
 Hotelling implements one and two sample Hotelling T^2 (T-squared) tests.
 It also implements Hotelling Control Charts (Multivariate) and multiple
 Univariate Control Charts
