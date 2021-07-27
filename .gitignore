@@ -43,6 +43,7 @@ htmlcov/
 .cache
 nosetests.xml
 coverage.xml
+coverage.txt
 *.cover
 .hypothesis/
 .pytest_cache/
@@ -102,3 +103,12 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# dask
+dask-worker-space/
+
+# plotly
+plotly/
+
+
+tests.rst

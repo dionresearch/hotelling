@@ -9,7 +9,7 @@ with open("README.rst") as readme_file:
 with open("HISTORY.rst") as history_file:
     history = history_file.read()
 
-requirements = ["click", "scipy", "matplotlib==3.2.2", "pandas", "numpy"]
+requirements = ["click", "scipy", "matplotlib", "pandas", "numpy"]
 
 setup_requirements = ["pytest-runner"]
 
@@ -20,7 +20,7 @@ setup(
     author_email="fdion@dionresearch.com",
     python_requires=">=3.6",
     classifiers=[
-        "Development Status :: 2 - Pre-Alpha",
+        "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
@@ -28,6 +28,7 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
     ],
     description="Hotelling implements one and two sample Hotelling T2 tests and control charts",
     entry_points={"console_scripts": ["hotelling=hotelling.cli:main"]},

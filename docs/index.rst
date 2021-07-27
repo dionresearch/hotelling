@@ -15,7 +15,7 @@ Welcome to Hotelling T2's documentation!
    contributing
    authors
    history
-   tests.md
+   tests
 
 Indices and tables
 ==================

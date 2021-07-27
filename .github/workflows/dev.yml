@@ -10,9 +10,10 @@ jobs:
         fail-fast: false
         matrix:
             os: ["ubuntu-latest"]
-            python-version: ["3.8", "3.7"]
+            python-version: ["3.9", "3.8", "3.7"]
     steps:
       - uses: actions/checkout@v2
+      - run: sudo apt-get install xvfb
       - uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
@@ -25,7 +26,8 @@ jobs:
 
       - shell: bash -l {0}
         run: |
-          conda install ipython nbconvert jupyter click matplotlib==3.2.2 pandas plotly scipy flake8 sphinx pandoc -y -q
+          conda install dask distributed ipython nbconvert jupyter click matplotlib pandas scipy flake8 sphinx pandoc -y -q
+          conda install plotly -c plotly -y
           python -m pip install -r requirements_dev.txt
           python -m pip install .
 
@@ -36,7 +38,7 @@ jobs:
         shell: bash -l {0}
         run: |
             flake8 --count --show-source --max-line-length=127 --statistics hotelling/
-            flake8 --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics hotelling/
+            flake8 --count --exit-zero --max-complexity=20 --max-line-length=127 --statistics hotelling/
 
       - name: Code Documentation check
         shell: bash -l {0}
@@ -51,9 +53,12 @@ jobs:
       - name: Unit tests
         shell: bash -l {0}
         run: |
-            cd tests
-            pytest --emoji -v --md ../docs/tests.md .
-            pytest --cov-report term --cov=hotelling . > coverage.txt
+          cd tests
+          mkdir -p plotly
+          xvfb-run --auto-servernum pytest --emoji -v --md ../docs/tests.md .
+          m2r ../docs/tests.md
+          xvfb-run --auto-servernum pytest --cov-report term --cov=hotelling . > coverage.txt
+          xvfb-run --auto-servernum pytest --cov-report html --cov=hotelling .
 
       - uses: machine-learning-apps/pr-comment@master
         if: matrix.os == 'ubuntu-latest' && github.event_name == 'pull_request' && matrix.python-version == '3.8'
@@ -70,15 +75,21 @@ jobs:
       - name: run notebooks
         shell: bash -l {0}
         run: |
-          jupyter nbconvert --to notebook --execute notebooks/hotelling\ control\ chart\ example.ipynb --output ../docs/hotelling\ control\ chart\ example.ipynb
-          jupyter nbconvert --to notebook --execute notebooks/hotelling\ cusum.ipynb --output ../docs/hotelling\ cusum.ipynb
-          jupyter nbconvert --to notebook --execute notebooks/hotelling\ with\ plotly.ipynb --output ../docs/hotelling\ with\ plotly.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling_control_chart_example.ipynb --output ../docs/hotelling_control_chart_example.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling_cusum.ipynb --output ../docs/hotelling_cusum.ipynb
+          jupyter nbconvert --to notebook --execute notebooks/hotelling_with_plotly.ipynb --output ../docs/hotelling_with_plotly.ipynb
 
       - name: API doc build
         shell: bash -l {0}
         run: |
           cd docs
           make html
+
+      - name: Copy coverage report
+        shell: bash -l {0}
+        run: |
+          cd tests
+          cp -r htmlcov ../docs/_build/html/
 
       - name: Push doc to Github Pages
         if: matrix.python-version == '3.8'

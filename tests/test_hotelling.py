@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-
 """Tests for `hotelling` package."""
 
 import pytest
@@ -18,7 +17,7 @@ def test_hotelling_test_array_two_sample():
     res = hotelling_t2(x, y)
     assert round(res[0], 4) == 11.1037  # T2
     assert round(res[1], 4) == 2.7759  # F
-    assert round(res[2], 5) == 0.15004
+    assert round(res[2], 5) == 0.15004  # p value
 
 
 def test_hotelling_test_df_two_sample():
@@ -27,7 +26,16 @@ def test_hotelling_test_df_two_sample():
     res = hotelling_t2(x, y)
     assert round(res[0], 4) == 11.1037  # T2
     assert round(res[1], 4) == 2.7759  # F
-    assert round(res[2], 5) == 0.15004
+    assert round(res[2], 5) == 0.15004  # p value
+
+
+def test_hotelling_test_df_two_sample_no_bessel():
+    x = pd.DataFrame([[23, 45, 15], [40, 85, 18], [215, 307, 60], [110, 110, 50], [65, 105, 24]])
+    y = pd.DataFrame([[277, 230, 63], [153, 80, 29], [306, 440, 105], [252, 350, 175], [143, 205, 42]])
+    res = hotelling_t2(x, y, bessel=False)
+    assert round(res[0], 4) == 11.1037  # T2
+    assert round(res[1], 4) == 2.2207  # F
+    assert round(res[2], 5) == 0.17337
 
 
 def test_nutrients_data_integrity_means_procedure():

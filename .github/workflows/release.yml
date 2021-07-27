@@ -1,6 +1,7 @@
 name: Hotelling Release
 on:
   release:
+    types: [published]
 
 jobs:
   releaseenv:

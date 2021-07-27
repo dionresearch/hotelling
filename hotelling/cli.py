@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-
 """Console script for hotelling."""
+
 import sys
 import click
 import pandas as pd
