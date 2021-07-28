@@ -30,6 +30,7 @@ Univariate Control Charts
 
 -  Free software: MIT license
 -  Documentation: https://dionresearch.github.io/hotelling/
+-  Extra data in `tests/data`
 
 Features
 --------
