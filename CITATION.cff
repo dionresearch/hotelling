@@ -1,0 +1,9 @@
+cff-version: 1.1.0
+message: If you use this software, please cite it as below.
+authors:
+  - family-names: Dion
+    given-names: Francois
+title: Hotelling
+abstract: "Hotelling implements one and two sample Hotelling T2 tests, T2 and f statistics and univariate and multivariate control charts and anomaly detection"
+version: 0.5.0
+date-released: 2021-07-20
