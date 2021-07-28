@@ -16,6 +16,7 @@ Welcome to Hotelling T2's documentation!
    authors
    history
    tests
+   presentations
 
 Indices and tables
 ==================
