@@ -2,12 +2,12 @@
 Test Report
 ===========
 
-*Report generated on 28-Jul-2021 at 14:43:10 by `pytest-md <https://github.com/hackebrot/pytest-md>`_\ * 📝
+*Report generated on 28-Jul-2021 at 15:09:24 by `pytest-md <https://github.com/hackebrot/pytest-md>`_\ * 📝
 
 Summary
 -------
 
-36 tests ran in 14.11 seconds ⏱
+36 tests ran in 12.87 seconds ⏱
 
 
 * 36 passed 😃
@@ -60,20 +60,20 @@ tests/test_one_sample_dask.py
 tests/test_one_sample_server.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_hotelling_test_csv_one_sample_server`` 1.65s ⏱
+``test_hotelling_test_csv_one_sample_server`` 1.66s ⏱
 
 tests/test_plot_control_chart.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_plotly_no_dask`` 0.47s ⏱
+``test_plotly_no_dask`` 0.45s ⏱
 
-``test_matplotlib_no_dask`` 0.23s ⏱
+``test_matplotlib_no_dask`` 0.20s ⏱
 
-``test_matplotlib_dask`` 0.37s ⏱
+``test_matplotlib_dask`` 0.34s ⏱
 
 ``test_matplotlib_identical`` 0.00s ⏱
 
-``test_matplotlib_cusum_no_dask`` 0.24s ⏱
+``test_matplotlib_cusum_no_dask`` 0.21s ⏱
 
 ``test_matplotlib_cusum_dask`` 0.35s ⏱
 
@@ -84,23 +84,23 @@ tests/test_plot_control_chart.py
 tests/test_plot_univariate_control_chart.py
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``test_univariate_plotly_no_dask`` 1.22s ⏱
+``test_univariate_plotly_no_dask`` 1.18s ⏱
 
-``test_matplotlib_univariate_no_dask`` 0.95s ⏱
+``test_matplotlib_univariate_no_dask`` 0.90s ⏱
 
-``test_matplotlib_univariate_dask`` 1.25s ⏱
+``test_matplotlib_univariate_dask`` 1.23s ⏱
 
 ``test_matplotlib_univariate_identical`` 0.01s ⏱
 
-``test_matplotlib_univariate_cusum_no_dask`` 1.19s ⏱
+``test_matplotlib_univariate_cusum_no_dask`` 1.20s ⏱
 
-``test_matplotlib_univariate_cusum_dask`` 1.51s ⏱
+``test_matplotlib_univariate_cusum_dask`` 1.41s ⏱
 
 ``test_matplotlib_univariate_cusum_identical`` 0.01s ⏱
 
-``test_matplotlib_univariate_cusum_only_no_dask`` 0.69s ⏱
+``test_matplotlib_univariate_cusum_only_no_dask`` 0.67s ⏱
 
-``test_matplotlib_univariate_cusum_only_dask`` 0.78s ⏱
+``test_matplotlib_univariate_cusum_only_dask`` 0.73s ⏱
 
 ``test_matplotlib_univariate_cusum_only_identical`` 0.01s ⏱
 
